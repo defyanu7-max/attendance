@@ -1,0 +1,38 @@
+/* =============================================
+   PPNI Custom CSS Overrides
+   ============================================= */
+
+/* Badge status absensi */
+.badge-hadir  { background-color: #10b981; color: #fff; }
+.badge-alpha  { background-color: #ef4444; color: #fff; }
+.badge-sakit  { background-color: #f59e0b; color: #fff; }
+.badge-izin   { background-color: #3b82f6; color: #fff; }
+
+/* Row terkunci UKS */
+.row-locked td { background-color: #f8fafc !important; color: #94a3b8; }
+
+/* Custom stat card icon background */
+.bg-primary-light { background-color: rgba(77, 68, 181, 0.1); }
+.bg-success-light { background-color: rgba(16, 185, 129, 0.1); }
+.bg-danger-light  { background-color: rgba(239, 68, 68, 0.1); }
+.bg-warning-light { background-color: rgba(245, 158, 11, 0.1); }
+.bg-info-light    { background-color: rgba(59, 130, 246, 0.1); }
+
+/* Font size utilities */
+.fs-12 { font-size: 12px !important; }
+.fs-14 { font-size: 14px !important; }
+.fs-32 { font-size: 32px !important; }
+
+/* Login page custom */
+.login-brand-title {
+    color: var(--primary, #4D44B5);
+    font-weight: 700;
+    font-size: 1.75rem;
+}
+
+/* Better brand title in sidebar */
+.nav-header .brand-title {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}

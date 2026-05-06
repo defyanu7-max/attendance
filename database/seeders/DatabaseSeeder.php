@@ -2,21 +2,131 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\AcademicYear;
+use App\Models\Setting;
+use App\Models\Unit;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        // --- Units ---
+        $mts = Unit::create(['name' => 'MTs']);
+        $ma = Unit::create(['name' => 'MA']);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // --- Academic Year ---
+        AcademicYear::create([
+            'name' => '2025/2026',
+            'start_date' => '2025-07-14',
+            'end_date' => '2026-06-20',
+            'is_active' => true,
+        ]);
+
+        // --- Users ---
+        User::create([
+            'name' => 'Super Admin',
+            'username' => 'superadmin',
+            'password' => Hash::make('password'),
+            'role' => 'superadmin',
+            'unit_id' => null,
+            'phone' => '081234567890',
+        ]);
+
+        User::create([
+            'name' => 'Admin MTs',
+            'username' => 'admin.mts',
+            'password' => Hash::make('password'),
+            'role' => 'admin',
+            'unit_id' => $mts->id,
+            'phone' => '081234567891',
+        ]);
+
+        User::create([
+            'name' => 'Admin MA',
+            'username' => 'admin.ma',
+            'password' => Hash::make('password'),
+            'role' => 'admin',
+            'unit_id' => $ma->id,
+            'phone' => '081234567892',
+        ]);
+
+        User::create([
+            'name' => 'Ustadz Ahmad (Walikelas MTs)',
+            'username' => 'ahmad.wk',
+            'password' => Hash::make('password'),
+            'role' => 'walikelas',
+            'unit_id' => $mts->id,
+        ]);
+
+        User::create([
+            'name' => 'Ustadz Budi (Guru MTs)',
+            'username' => 'budi.guru',
+            'password' => Hash::make('password'),
+            'role' => 'guru',
+            'unit_id' => $mts->id,
+        ]);
+
+        User::create([
+            'name' => 'Ustadz Chandra (Walikelas MA)',
+            'username' => 'chandra.wk',
+            'password' => Hash::make('password'),
+            'role' => 'walikelas',
+            'unit_id' => $ma->id,
+        ]);
+
+        User::create([
+            'name' => 'Ustadz Dani (Guru MA)',
+            'username' => 'dani.guru',
+            'password' => Hash::make('password'),
+            'role' => 'guru',
+            'unit_id' => $ma->id,
+        ]);
+
+        // --- Settings ---
+        $settings = [
+            [
+                'key' => 'alpha_threshold_mode',
+                'value' => 'cumulative',
+                'type' => 'string',
+                'description' => 'Mode hitung alpha: cumulative atau weekly',
+            ],
+            [
+                'key' => 'alpha_threshold_count',
+                'value' => '5',
+                'type' => 'integer',
+                'description' => 'Jumlah alpha maksimal sebelum notifikasi',
+            ],
+            [
+                'key' => 'attendance_cutoff_time',
+                'value' => '14:00',
+                'type' => 'string',
+                'description' => 'Jam batas input absensi KBM (format HH:MM)',
+            ],
+            [
+                'key' => 'wa_notification_enabled',
+                'value' => 'true',
+                'type' => 'boolean',
+                'description' => 'Toggle seluruh sistem notifikasi WA',
+            ],
+            [
+                'key' => 'wa_message_template',
+                'value' => 'Assalamu\'alaikum. Dengan hormat, kami informasikan bahwa santri bernama {nama_santri} (NIS: {nis}) dari kelas {kelas} telah tercatat alpha sebanyak {jumlah_alpha} kali. Mohon perhatian dan tindak lanjut. Jazakumullahu khairan.',
+                'type' => 'string',
+                'description' => 'Template pesan WA dengan variabel',
+            ],
+            [
+                'key' => 'default_weekend_days',
+                'value' => '[0,6]',
+                'type' => 'json',
+                'description' => 'Hari weekend default: 0=Minggu, 6=Sabtu',
+            ],
+        ];
+
+        foreach ($settings as $setting) {
+            Setting::create($setting);
+        }
     }
 }
