@@ -26,64 +26,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // --- Users ---
-        User::create([
-            'name' => 'Super Admin',
-            'username' => 'superadmin',
-            'password' => Hash::make('password'),
-            'role' => 'superadmin',
-            'unit_id' => null,
-            'phone' => '081234567890',
-        ]);
-
-        User::create([
-            'name' => 'Admin MTs',
-            'username' => 'admin.mts',
-            'password' => Hash::make('password'),
-            'role' => 'admin',
-            'unit_id' => $mts->id,
-            'phone' => '081234567891',
-        ]);
-
-        User::create([
-            'name' => 'Admin MA',
-            'username' => 'admin.ma',
-            'password' => Hash::make('password'),
-            'role' => 'admin',
-            'unit_id' => $ma->id,
-            'phone' => '081234567892',
-        ]);
-
-        User::create([
-            'name' => 'Ustadz Ahmad (Walikelas MTs)',
-            'username' => 'ahmad.wk',
-            'password' => Hash::make('password'),
-            'role' => 'walikelas',
-            'unit_id' => $mts->id,
-        ]);
-
-        User::create([
-            'name' => 'Ustadz Budi (Guru MTs)',
-            'username' => 'budi.guru',
-            'password' => Hash::make('password'),
-            'role' => 'guru',
-            'unit_id' => $mts->id,
-        ]);
-
-        User::create([
-            'name' => 'Ustadz Chandra (Walikelas MA)',
-            'username' => 'chandra.wk',
-            'password' => Hash::make('password'),
-            'role' => 'walikelas',
-            'unit_id' => $ma->id,
-        ]);
-
-        User::create([
-            'name' => 'Ustadz Dani (Guru MA)',
-            'username' => 'dani.guru',
-            'password' => Hash::make('password'),
-            'role' => 'guru',
-            'unit_id' => $ma->id,
-        ]);
+        $this->call(UserSeeder::class);
 
         // --- Settings ---
         $settings = [

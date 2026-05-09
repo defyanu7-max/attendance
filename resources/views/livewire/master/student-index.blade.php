@@ -11,7 +11,13 @@
             </ol>
         </div>
         <div class="col-sm-6 text-end">
-            <a href="{{ route('export.students') }}" class="btn btn-success me-2">
+            <a href="{{ route('export.students.template') }}" class="btn btn-info me-2 text-white">
+                <i class="bi bi-download me-1"></i> Unduh Template
+            </a>
+            <a href="{{ route('import.index', ['type' => 'students']) }}" class="btn btn-success me-2">
+                <i class="bi bi-file-earmark-excel me-1"></i> Import Excel
+            </a>
+            <a href="{{ route('export.students') }}" class="btn btn-outline-success me-2">
                 <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
             </a>
             <a href="{{ route('students.create') }}" class="btn btn-primary">

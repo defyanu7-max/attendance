@@ -6,16 +6,21 @@ use App\Models\AcademicYear;
 use App\Models\Student;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
 
 #[Layout('layouts.app')]
 #[Title('Data Santri')]
 class StudentIndex extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
+
+    public $importFile;
 
     protected $paginationTheme = 'bootstrap';
 

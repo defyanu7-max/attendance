@@ -39,7 +39,7 @@ class Classes extends Model
 
     public function students(): BelongsToMany
     {
-        return $this->belongsToMany(Student::class, 'class_student')
+        return $this->belongsToMany(Student::class, 'class_student', 'class_id', 'student_id')
             ->withPivot(['academic_year_id', 'enrolled_at'])
             ->withTimestamps();
     }

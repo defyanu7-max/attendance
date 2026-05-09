@@ -14,11 +14,13 @@ use App\Livewire\Academic\SubstitutionForm;
 use App\Livewire\Master\StudentIndex;
 use App\Livewire\Master\StudentForm;
 use App\Livewire\Master\ClassIndex;
-use App\Livewire\Master\ExcelImport;
+use App\Livewire\Master\DataImport;
 use App\Livewire\Uks\LeaveForm;
 use App\Livewire\Notification\AlphaNotificationIndex;
 use App\Livewire\System\CalendarManager;
 use App\Livewire\System\SettingsAlpha;
+use App\Livewire\Master\TeacherIndex;
+use App\Livewire\Master\TeacherForm;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,16 +54,23 @@ Route::middleware('auth')->group(function () {
         Route::get('/classes', ClassIndex::class)->name('classes.index');
         Route::get('/substitutions', SubstitutionForm::class)->name('substitutions.index');
         Route::get('/notifications', AlphaNotificationIndex::class)->name('notifications.index');
+        
+        Route::get('/teachers', TeacherIndex::class)->name('teachers.index');
+        Route::get('/teachers/create', TeacherForm::class)->name('teachers.create');
+        Route::get('/teachers/{teacher}/edit', TeacherForm::class)->name('teachers.edit');
 
         // Excel Export
         Route::prefix('export')->name('export.')->group(function () {
             Route::get('/students', [ExcelExportController::class, 'students'])->name('students');
             Route::get('/teachers', [ExcelExportController::class, 'teachers'])->name('teachers');
             Route::get('/schedules', [ExcelExportController::class, 'schedules'])->name('schedules');
+            
+            Route::get('/students/template', [ExcelExportController::class, 'studentsTemplate'])->name('students.template');
+            Route::get('/teachers/template', [ExcelExportController::class, 'teachersTemplate'])->name('teachers.template');
         });
 
         // Excel Import
-        Route::get('/import', ExcelImport::class)->name('import.index');
+        Route::get('/import', DataImport::class)->name('import.index');
     });
 
     // UKS — Admin+

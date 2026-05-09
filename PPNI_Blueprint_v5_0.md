@@ -1,4 +1,5 @@
 # MASTER BLUEPRINT: PPNI SYSTEM v5.0
+
 ### Panduan Lengkap untuk AI Agent & Developer
 
 > **Dokumen ini adalah kiblat tunggal pengembangan sistem.** Setiap keputusan teknis, arsitektur, logika bisnis, dan estetika UI mengacu pada dokumen ini. Tidak ada interpretasi bebas di luar yang tertulis di sini.
@@ -10,18 +11,18 @@
 
 ### Changelog v4.0 → v5.0
 
-| # | Perubahan | Severity |
-|---|---|---|
-| 1 | Ganti CSS Framework: Tailwind CSS → **Bootstrap 5 + Akademi Template** (DexignLab) | 🔴 Breaking |
-| 2 | Ganti Font: Inter/Source Serif 4 → **Poppins** (default template) | 🔴 Breaking |
-| 3 | Ganti Color Palette: emerald/slate → **`--primary: #4D44B5` / `--secondary: #FB7D5B`** | 🔴 Breaking |
-| 4 | Ganti Layout Structure: Tailwind classes → **Akademi layout classes** (`.nav-header`, `.dlabnav`, `.content-body`) | 🔴 Breaking |
-| 5 | Update Section 5.1 Tech Stack: tambah Bootstrap 5, jQuery, DataTables, SweetAlert2, Toastr | 🔴 Breaking |
-| 6 | Update Section 5.4 JS Rules: jQuery sekarang WAJIB ada, Alpine tetap dikelola Livewire | 🟡 Update |
-| 7 | Update Section 7.1 Struktur Direktori: aset CSS/JS di `public/` mengikuti struktur template | 🟡 Update |
-| 8 | Rewrite Section 13 Estetika Frontend: semua class reference sekarang Bootstrap + Akademi | 🔴 Breaking |
-| 9 | Update Section 14 Livewire Catalog: tambah contoh HTML komponen Bootstrap per Livewire | 🟡 Update |
-| 10 | Tambah Section 21: Panduan Integrasi Template Akademi (asset path, vendor, konfigurasi) | 🟢 Baru |
+| #   | Perubahan                                                                                                          | Severity    |
+| --- | ------------------------------------------------------------------------------------------------------------------ | ----------- |
+| 1   | Ganti CSS Framework: Tailwind CSS → **Bootstrap 5 + Akademi Template** (DexignLab)                                 | 🔴 Breaking |
+| 2   | Ganti Font: Inter/Source Serif 4 → **Poppins** (default template)                                                  | 🔴 Breaking |
+| 3   | Ganti Color Palette: emerald/slate → **`--primary: #4D44B5` / `--secondary: #FB7D5B`**                             | 🔴 Breaking |
+| 4   | Ganti Layout Structure: Tailwind classes → **Akademi layout classes** (`.nav-header`, `.dlabnav`, `.content-body`) | 🔴 Breaking |
+| 5   | Update Section 5.1 Tech Stack: tambah Bootstrap 5, jQuery, DataTables, SweetAlert2, Toastr                         | 🔴 Breaking |
+| 6   | Update Section 5.4 JS Rules: jQuery sekarang WAJIB ada, Alpine tetap dikelola Livewire                             | 🟡 Update   |
+| 7   | Update Section 7.1 Struktur Direktori: aset CSS/JS di `public/` mengikuti struktur template                        | 🟡 Update   |
+| 8   | Rewrite Section 13 Estetika Frontend: semua class reference sekarang Bootstrap + Akademi                           | 🔴 Breaking |
+| 9   | Update Section 14 Livewire Catalog: tambah contoh HTML komponen Bootstrap per Livewire                             | 🟡 Update   |
+| 10  | Tambah Section 21: Panduan Integrasi Template Akademi (asset path, vendor, konfigurasi)                            | 🟢 Baru     |
 
 ---
 
@@ -68,16 +69,16 @@ Permasalahan yang ada saat ini sebelum sistem dibangun:
 
 ### 1.2 Tujuan Sistem
 
-| ID | Tujuan | Indikator Keberhasilan |
-|---|---|---|
-| T-01 | Digitalisasi absensi KBM harian | 100% absensi tercatat secara digital, nol kertas |
-| T-02 | Peringatan dini alpha santri | Notifikasi WA ke bagian Keamanan dalam < 1 jam setelah threshold terlampaui |
-| T-03 | Sentralisasi data izin UKS | Guru dapat melihat status izin santri real-time sebelum input absensi |
-| T-04 | Dokumentasi guru badal | Setiap jadwal penggantian tercatat dengan nama guru pengganti dan tanggal |
-| T-05 | Rekap laporan otomatis | Walikelas dapat mengunduh rekap absensi kelas kapan saja tanpa menghitung manual |
-| T-06 | Manajemen kalender akademik | Admin dapat menandai hari libur sehingga sistem tidak salah menjadwalkan atau mencatat alpha |
-| T-07 | Keamanan data multi-unit | Guru MTs tidak dapat melihat data MA, dan sebaliknya |
-| T-08 | Audit trail lengkap | Setiap perubahan status absensi tercatat (siapa, kapan, dari apa, menjadi apa) |
+| ID   | Tujuan                          | Indikator Keberhasilan                                                                       |
+| ---- | ------------------------------- | -------------------------------------------------------------------------------------------- |
+| T-01 | Digitalisasi absensi KBM harian | 100% absensi tercatat secara digital, nol kertas                                             |
+| T-02 | Peringatan dini alpha santri    | Notifikasi WA ke bagian Keamanan dalam < 1 jam setelah threshold terlampaui                  |
+| T-03 | Sentralisasi data izin UKS      | Guru dapat melihat status izin santri real-time sebelum input absensi                        |
+| T-04 | Dokumentasi guru badal          | Setiap jadwal penggantian tercatat dengan nama guru pengganti dan tanggal                    |
+| T-05 | Rekap laporan otomatis          | Walikelas dapat mengunduh rekap absensi kelas kapan saja tanpa menghitung manual             |
+| T-06 | Manajemen kalender akademik     | Admin dapat menandai hari libur sehingga sistem tidak salah menjadwalkan atau mencatat alpha |
+| T-07 | Keamanan data multi-unit        | Guru MTs tidak dapat melihat data MA, dan sebaliknya                                         |
+| T-08 | Audit trail lengkap             | Setiap perubahan status absensi tercatat (siapa, kapan, dari apa, menjadi apa)               |
 
 ### 1.3 Batasan Sistem (Out of Scope)
 
@@ -104,14 +105,14 @@ Permasalahan yang ada saat ini sebelum sistem dibangun:
 
 ### 2.3 Prinsip Desain
 
-| Prinsip | Penerapan |
-|---|---|
-| **Fault-tolerant** | Jika guru lupa absen, cron otomatis mengisi "Hadir" pukul 14:01. Sistem tidak bergantung pada disiplin pengguna. |
-| **Data immutability** | Data absensi historis tidak pernah dihapus — hanya dikoreksi. Rekam jejak selalu ada via `attendance_logs`. |
-| **Scope isolation** | Data setiap unit (MTs/MA) terisolasi secara otomatis. Pengguna tidak perlu memilih filter unit. |
-| **Progressive disclosure** | Guru hanya melihat fitur yang relevan dengan perannya. Admin melihat lebih banyak. Superadmin melihat semuanya. |
-| **Mobile-first** | Sebagian besar guru mengakses via smartphone. Setiap fitur harus nyaman digunakan di layar 5–6 inci. |
-| **Zero configuration** | Setelah instalasi dan seeding, sistem langsung bisa digunakan tanpa konfigurasi tambahan oleh pengguna. |
+| Prinsip                    | Penerapan                                                                                                        |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **Fault-tolerant**         | Jika guru lupa absen, cron otomatis mengisi "Hadir" pukul 14:01. Sistem tidak bergantung pada disiplin pengguna. |
+| **Data immutability**      | Data absensi historis tidak pernah dihapus — hanya dikoreksi. Rekam jejak selalu ada via `attendance_logs`.      |
+| **Scope isolation**        | Data setiap unit (MTs/MA) terisolasi secara otomatis. Pengguna tidak perlu memilih filter unit.                  |
+| **Progressive disclosure** | Guru hanya melihat fitur yang relevan dengan perannya. Admin melihat lebih banyak. Superadmin melihat semuanya.  |
+| **Mobile-first**           | Sebagian besar guru mengakses via smartphone. Setiap fitur harus nyaman digunakan di layar 5–6 inci.             |
+| **Zero configuration**     | Setelah instalasi dan seeding, sistem langsung bisa digunakan tanpa konfigurasi tambahan oleh pengguna.          |
 
 ---
 
@@ -119,17 +120,18 @@ Permasalahan yang ada saat ini sebelum sistem dibangun:
 
 ### 3.1 Daftar Aktor
 
-| Aktor | Role di Sistem | Deskripsi |
-|---|---|---|
-| **Superadmin** | `superadmin` | Pengelola teknis sistem. Akses penuh lintas unit. Mengatur konfigurasi global. |
-| **Admin** | `admin` | Staf TU/akademik. Mengelola data master (siswa, kelas, jadwal). Terikat pada satu unit. |
-| **Walikelas** | `walikelas` | Guru yang merangkap wali kelas. Akses rekap kelas walinya + absensi. |
-| **Guru** | `guru` | Guru pengampu mata pelajaran. Akses absensi jadwal yang dia ampu atau dibadali. |
-| **Sistem** | — | Aktor otomatis: cron job, observer, job queue. |
+| Aktor          | Role di Sistem | Deskripsi                                                                               |
+| -------------- | -------------- | --------------------------------------------------------------------------------------- |
+| **Superadmin** | `superadmin`   | Pengelola teknis sistem. Akses penuh lintas unit. Mengatur konfigurasi global.          |
+| **Admin**      | `admin`        | Staf TU/akademik. Mengelola data master (siswa, kelas, jadwal). Terikat pada satu unit. |
+| **Walikelas**  | `walikelas`    | Guru yang merangkap wali kelas. Akses rekap kelas walinya + absensi.                    |
+| **Guru**       | `guru`         | Guru pengampu mata pelajaran. Akses absensi jadwal yang dia ampu atau dibadali.         |
+| **Sistem**     | —              | Aktor otomatis: cron job, observer, job queue.                                          |
 
 ### 3.2 User Story per Aktor
 
 #### Guru
+
 ```
 Sebagai Guru, saya ingin:
 - Melihat daftar jadwal mengajar saya hari ini di dashboard
@@ -141,6 +143,7 @@ Sebagai Guru, saya ingin:
 ```
 
 #### Walikelas
+
 ```
 Sebagai Walikelas, saya ingin:
 - Melihat rekap absensi lengkap kelas yang saya wali
@@ -150,6 +153,7 @@ Sebagai Walikelas, saya ingin:
 ```
 
 #### Admin
+
 ```
 Sebagai Admin, saya ingin:
 - Mendaftarkan santri baru dan memasukkannya ke kelas
@@ -162,6 +166,7 @@ Sebagai Admin, saya ingin:
 ```
 
 #### Superadmin
+
 ```
 Sebagai Superadmin, saya ingin:
 - Semua yang bisa dilakukan Admin
@@ -173,6 +178,7 @@ Sebagai Superadmin, saya ingin:
 ```
 
 #### Sistem (Aktor Otomatis)
+
 ```
 Sebagai Sistem, saya harus:
 - Pukul 14:01: mengisi absensi "Hadir" untuk santri yang belum diabsen
@@ -230,12 +236,12 @@ PPNI System
 
 ### 4.2 Prioritas Pengembangan
 
-| Prioritas | Module | Alasan |
-|---|---|---|
-| P0 — Must Have | M-01, M-02, M-04-A, M-04-B | Tanpa ini sistem tidak bisa digunakan sama sekali |
-| P1 — Should Have | M-03, M-04-C, M-04-E, M-05-A, M-06 | Fungsionalitas inti yang dibutuhkan harian |
-| P2 — Nice to Have | M-04-D, M-07-A, M-07-B, M-07-C | Penting tapi bisa menyusul setelah P0 dan P1 selesai |
-| P3 — Later | M-07-D | Fitur pendukung operasional |
+| Prioritas         | Module                             | Alasan                                               |
+| ----------------- | ---------------------------------- | ---------------------------------------------------- |
+| P0 — Must Have    | M-01, M-02, M-04-A, M-04-B         | Tanpa ini sistem tidak bisa digunakan sama sekali    |
+| P1 — Should Have  | M-03, M-04-C, M-04-E, M-05-A, M-06 | Fungsionalitas inti yang dibutuhkan harian           |
+| P2 — Nice to Have | M-04-D, M-07-A, M-07-B, M-07-C     | Penting tapi bisa menyusul setelah P0 dan P1 selesai |
+| P3 — Later        | M-07-D                             | Fitur pendukung operasional                          |
 
 ---
 
@@ -245,19 +251,19 @@ PPNI System
 
 ### 5.1 Tech Stack
 
-| Komponen | Teknologi | Versi | Keterangan |
-|---|---|---|---|
-| Framework | Laravel | 11 | Backbone utama |
-| Reaktivitas UI | Livewire | 3.x | Full-stack reactive, tanpa inisialisasi Alpine.js manual |
-| Bahasa | PHP | 8.5 | Pipe operator, clone with, array_first/last, #[NoDiscard] |
-| CSS Framework | **Bootstrap** | **5.x** | ⚠️ BUKAN Tailwind. Menggunakan Bootstrap dari template Akademi |
-| Template Admin | **Akademi (DexignLab)** | — | Custom CSS di `public/css/style.css`, vendor di `public/vendor/` |
-| Database | MySQL / MariaDB | 8.0+ / 10.6+ | InnoDB, charset `utf8mb4_unicode_ci` |
-| Queue Driver | Redis | 7.x | Production; fallback `database` untuk dev |
-| Cache Driver | Redis | 7.x | Shared instance dengan queue |
-| Backup | spatie/laravel-backup | latest | Target: Google Drive |
-| Server | Nginx + PHP-FPM | — | Atau Laravel Octane (opsional) |
-| Node.js | Node.js | 20 LTS | Untuk build assets (Vite) — **hanya untuk Livewire assets**, bukan CSS/JS template |
+| Komponen       | Teknologi               | Versi        | Keterangan                                                                         |
+| -------------- | ----------------------- | ------------ | ---------------------------------------------------------------------------------- |
+| Framework      | Laravel                 | 11           | Backbone utama                                                                     |
+| Reaktivitas UI | Livewire                | 3.x          | Full-stack reactive, tanpa inisialisasi Alpine.js manual                           |
+| Bahasa         | PHP                     | 8.5          | Pipe operator, clone with, array_first/last, #[NoDiscard]                          |
+| CSS Framework  | **Bootstrap**           | **5.x**      | ⚠️ BUKAN Tailwind. Menggunakan Bootstrap dari template Akademi                     |
+| Template Admin | **Akademi (DexignLab)** | —            | Custom CSS di `public/css/style.css`, vendor di `public/vendor/`                   |
+| Database       | MySQL / MariaDB         | 8.0+ / 10.6+ | InnoDB, charset `utf8mb4_unicode_ci`                                               |
+| Queue Driver   | Redis                   | 7.x          | Production; fallback `database` untuk dev                                          |
+| Cache Driver   | Redis                   | 7.x          | Shared instance dengan queue                                                       |
+| Backup         | spatie/laravel-backup   | latest       | Target: Google Drive                                                               |
+| Server         | Nginx + PHP-FPM         | —            | Atau Laravel Octane (opsional)                                                     |
+| Node.js        | Node.js                 | 20 LTS       | Untuk build assets (Vite) — **hanya untuk Livewire assets**, bukan CSS/JS template |
 
 > ⚠️ **PENTING — CSS/JS Template:** Seluruh aset template Akademi (Bootstrap, MetisMenu, DataTables, dll.) sudah tersedia sebagai **file statis di `public/`**. Jangan install ulang via npm. Gunakan langsung dengan `asset('vendor/...')` atau `asset('css/style.css')`.
 
@@ -319,7 +325,7 @@ use Illuminate\Support\Facades\Queue;
 
 ```js
 // resources/js/app.js — HANYA INI
-import './bootstrap';
+import "./bootstrap";
 ```
 
 - **DILARANG** `import Alpine from 'alpinejs'` — Livewire 3 sudah mengelola Alpine otomatis.
@@ -426,6 +432,7 @@ users (1) ──< attendance_logs (N)        [changed_by]
 ### 6.2 Tabel Master
 
 #### `units`
+
 ```sql
 CREATE TABLE units (
     id         BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -437,6 +444,7 @@ CREATE TABLE units (
 ```
 
 #### `academic_years`
+
 ```sql
 CREATE TABLE academic_years (
     id         BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -451,6 +459,7 @@ CREATE TABLE academic_years (
 ```
 
 #### `users`
+
 ```sql
 CREATE TABLE users (
     id         BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -469,6 +478,7 @@ CREATE TABLE users (
 ```
 
 #### `students`
+
 ```sql
 CREATE TABLE students (
     id         BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -488,6 +498,7 @@ CREATE TABLE students (
 ### 6.3 Tabel Kelas & Jadwal
 
 #### `classes`
+
 ```sql
 CREATE TABLE classes (
     id                  BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -505,6 +516,7 @@ CREATE TABLE classes (
 ```
 
 #### `class_student` (pivot)
+
 ```sql
 CREATE TABLE class_student (
     id               BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -522,6 +534,7 @@ CREATE TABLE class_student (
 ```
 
 #### `subjects`
+
 ```sql
 CREATE TABLE subjects (
     id         BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -537,6 +550,7 @@ CREATE TABLE subjects (
 ```
 
 #### `schedules`
+
 ```sql
 CREATE TABLE schedules (
     id               BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -564,6 +578,7 @@ CREATE TABLE schedules (
 ```
 
 **Logika generate `unique_code`:**
+
 ```php
 private function generateUniqueCode(Subject $subject, Classes $class, AcademicYear $year): string
 {
@@ -576,6 +591,7 @@ private function generateUniqueCode(Subject $subject, Classes $class, AcademicYe
 ```
 
 #### `schedule_substitutions`
+
 ```sql
 CREATE TABLE schedule_substitutions (
     id                 BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -595,6 +611,7 @@ CREATE TABLE schedule_substitutions (
 ### 6.4 Tabel Absensi (Inti Sistem)
 
 #### `student_attendances`
+
 ```sql
 CREATE TABLE student_attendances (
     id                   BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -624,6 +641,7 @@ CREATE TABLE student_attendances (
 ```
 
 #### `teacher_attendances`
+
 ```sql
 CREATE TABLE teacher_attendances (
     id               BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -645,6 +663,7 @@ CREATE TABLE teacher_attendances (
 ```
 
 #### `attendance_logs`
+
 ```sql
 CREATE TABLE attendance_logs (
     id             BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -666,6 +685,7 @@ CREATE TABLE attendance_logs (
 ### 6.5 Tabel Pendukung
 
 #### `student_leaves`
+
 ```sql
 CREATE TABLE student_leaves (
     id         BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -687,6 +707,7 @@ CREATE TABLE student_leaves (
 ```
 
 #### `school_calendars`
+
 ```sql
 CREATE TABLE school_calendars (
     id          BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -702,6 +723,7 @@ CREATE TABLE school_calendars (
 ```
 
 #### `settings`
+
 ```sql
 CREATE TABLE settings (
     id          BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -715,16 +737,17 @@ CREATE TABLE settings (
 
 **Seed wajib tabel `settings`:**
 
-| `key` | `value` | `type` | `description` |
-|---|---|---|---|
-| `alpha_threshold_mode` | `cumulative` | string | Mode hitung alpha: `cumulative` atau `weekly` |
-| `alpha_threshold_count` | `5` | integer | Jumlah alpha maksimal sebelum notifikasi |
-| `attendance_cutoff_time` | `14:00` | string | Jam batas input absensi KBM (format HH:MM) |
-| `wa_notification_enabled` | `true` | boolean | Toggle seluruh sistem notifikasi WA |
-| `wa_message_template` | *(lihat Bagian 10.3)* | string | Template pesan WA dengan variabel |
-| `default_weekend_days` | `[0,6]` | json | Hari weekend default: 0=Minggu, 6=Sabtu |
+| `key`                     | `value`               | `type`  | `description`                                 |
+| ------------------------- | --------------------- | ------- | --------------------------------------------- |
+| `alpha_threshold_mode`    | `cumulative`          | string  | Mode hitung alpha: `cumulative` atau `weekly` |
+| `alpha_threshold_count`   | `5`                   | integer | Jumlah alpha maksimal sebelum notifikasi      |
+| `attendance_cutoff_time`  | `14:00`               | string  | Jam batas input absensi KBM (format HH:MM)    |
+| `wa_notification_enabled` | `true`                | boolean | Toggle seluruh sistem notifikasi WA           |
+| `wa_message_template`     | _(lihat Bagian 10.3)_ | string  | Template pesan WA dengan variabel             |
+| `default_weekend_days`    | `[0,6]`               | json    | Hari weekend default: 0=Minggu, 6=Sabtu       |
 
 #### `notification_queue`
+
 ```sql
 CREATE TABLE notification_queue (
     id           BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -748,6 +771,7 @@ CREATE TABLE notification_queue (
 ```
 
 #### `settings_logs`
+
 ```sql
 CREATE TABLE settings_logs (
     id         BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -864,16 +888,16 @@ public/
 
 ### 7.2 Konvensi Penamaan
 
-| Entitas | Konvensi | Contoh |
-|---|---|---|
-| Model | PascalCase, singular | `StudentAttendance` |
-| Tabel DB | snake_case, plural | `student_attendances` |
-| Livewire Component | PascalCase | `StudentTake` |
-| View Livewire | kebab-case | `student-take.blade.php` |
-| Form Request | `{Action}{Model}Request` | `StoreStudentRequest` |
-| Job | PascalCase, verb phrase | `CreateAlphaNotification` |
-| Observer | `{Model}Observer` | `StudentAttendanceObserver` |
-| Route name | kebab-case, titik sebagai separator | `students.index`, `academic.attendance.take` |
+| Entitas            | Konvensi                            | Contoh                                       |
+| ------------------ | ----------------------------------- | -------------------------------------------- |
+| Model              | PascalCase, singular                | `StudentAttendance`                          |
+| Tabel DB           | snake_case, plural                  | `student_attendances`                        |
+| Livewire Component | PascalCase                          | `StudentTake`                                |
+| View Livewire      | kebab-case                          | `student-take.blade.php`                     |
+| Form Request       | `{Action}{Model}Request`            | `StoreStudentRequest`                        |
+| Job                | PascalCase, verb phrase             | `CreateAlphaNotification`                    |
+| Observer           | `{Model}Observer`                   | `StudentAttendanceObserver`                  |
+| Route name         | kebab-case, titik sebagai separator | `students.index`, `academic.attendance.take` |
 
 ### 7.3 Model Boilerplate (Student) — tidak berubah dari v4.0
 
@@ -970,27 +994,27 @@ class UnitScope implements Scope
 
 ### 8.2 Matrix Penerapan UnitScope
 
-| Model | UnitScope | Catatan |
-|---|---|---|
-| `User` | ❌ **DILARANG** | Penyebab infinite loop |
-| `Student` | ✅ Wajib | unit_id langsung |
-| `Classes` | ✅ Wajib | unit_id langsung |
-| `Subject` | ✅ Wajib | unit_id langsung |
-| `Schedule` | ✅ Wajib | unit_id denormalisasi |
-| `StudentAttendance` | ✅ Wajib | unit_id denormalisasi |
-| `TeacherAttendance` | ✅ Wajib | unit_id denormalisasi |
-| `StudentLeave` | ✅ Wajib | unit_id denormalisasi |
-| `NotificationQueue` | ✅ Wajib | unit_id denormalisasi |
-| `AcademicYear` | ❌ Tidak | Shared lintas unit |
-| `SchoolCalendar` | ❌ Tidak | Difilter manual |
-| `AttendanceLog` | ❌ Tidak | Audit trail global |
-| `Setting` | ❌ Tidak | Global config |
+| Model               | UnitScope       | Catatan                |
+| ------------------- | --------------- | ---------------------- |
+| `User`              | ❌ **DILARANG** | Penyebab infinite loop |
+| `Student`           | ✅ Wajib        | unit_id langsung       |
+| `Classes`           | ✅ Wajib        | unit_id langsung       |
+| `Subject`           | ✅ Wajib        | unit_id langsung       |
+| `Schedule`          | ✅ Wajib        | unit_id denormalisasi  |
+| `StudentAttendance` | ✅ Wajib        | unit_id denormalisasi  |
+| `TeacherAttendance` | ✅ Wajib        | unit_id denormalisasi  |
+| `StudentLeave`      | ✅ Wajib        | unit_id denormalisasi  |
+| `NotificationQueue` | ✅ Wajib        | unit_id denormalisasi  |
+| `AcademicYear`      | ❌ Tidak        | Shared lintas unit     |
+| `SchoolCalendar`    | ❌ Tidak        | Difilter manual        |
+| `AttendanceLog`     | ❌ Tidak        | Audit trail global     |
+| `Setting`           | ❌ Tidak        | Global config          |
 
 ---
 
 ## 9. Logika Bisnis Detail per Modul — tidak berubah dari v4.0
 
-*(Seluruh logika bisnis identik dengan v4.0: autentikasi, dashboard, manajemen santri, jadwal, StudentTake, rekap, guru badal, koreksi absensi, UKS)*
+_(Seluruh logika bisnis identik dengan v4.0: autentikasi, dashboard, manajemen santri, jadwal, StudentTake, rekap, guru badal, koreksi absensi, UKS)_
 
 Lihat kode lengkap di Section 9 v4.0 — semua logika backend tidak berubah, hanya tampilan frontendnya yang berubah ke Bootstrap.
 
@@ -998,13 +1022,13 @@ Lihat kode lengkap di Section 9 v4.0 — semua logika backend tidak berubah, han
 
 ## 10. Sistem Notifikasi Alpha WhatsApp — tidak berubah dari v4.0
 
-*(Alur, template pesan, implementasi Job, Observer — identik dengan v4.0)*
+_(Alur, template pesan, implementasi Job, Observer — identik dengan v4.0)_
 
 ---
 
 ## 11. Otomatisasi & Pekerja Latar Belakang — tidak berubah dari v4.0
 
-*(Scheduler, `ppni:auto-hadir`, `ppni:auto-alpha-guru`, konfigurasi Redis — identik dengan v4.0)*
+_(Scheduler, `ppni:auto-hadir`, `ppni:auto-alpha-guru`, konfigurasi Redis — identik dengan v4.0)_
 
 ---
 
@@ -1012,26 +1036,26 @@ Lihat kode lengkap di Section 9 v4.0 — semua logika backend tidak berubah, han
 
 ### 12.1 Matrix Akses Lengkap
 
-| Fitur | Superadmin | Admin | Walikelas | Guru |
-|---|:---:|:---:|:---:|:---:|
-| **Dashboard** | ✅ Full | ✅ Full | ✅ Terbatas | ✅ Terbatas |
-| **Santri: lihat** | ✅ | ✅ | ✅ (kelas wali) | ❌ |
-| **Santri: tambah/edit** | ✅ | ✅ | ❌ | ❌ |
-| **Santri: hapus (soft)** | ✅ | ❌ | ❌ | ❌ |
-| **Mapel: lihat semua** | ✅ | ✅ | ✅ | ✅ |
-| **Mapel: kelola** | ✅ | ✅ | ❌ | ❌ |
-| **Jadwal: lihat** | ✅ | ✅ | ✅ (diampu) | ✅ (diampu) |
-| **Jadwal: kelola** | ✅ | ✅ | ❌ | ❌ |
-| **Absensi: input** | ✅ | ✅ | ✅ (kelas wali+ampu) | ✅ (diampu+badal) |
-| **Absensi: rekap lihat** | ✅ | ✅ | ✅ (kelas wali) | ✅ (kelas ampu) |
-| **Absensi: koreksi** | ✅ | ✅ | ❌ | ❌ |
-| **Absensi: export** | ✅ | ✅ | ✅ (kelas wali) | ❌ |
-| **UKS: izin santri** | ✅ | ✅ | ❌ | ❌ |
-| **Notifikasi alpha** | ✅ | ✅ | ❌ | ❌ |
-| **Kalender libur** | ✅ | ❌ | ❌ | ❌ |
-| **Pengaturan alpha** | ✅ | ❌ | ❌ | ❌ |
-| **Backup status** | ✅ | ❌ | ❌ | ❌ |
-| **Ganti password sendiri** | ✅ | ✅ | ✅ | ✅ |
+| Fitur                      | Superadmin |  Admin  |      Walikelas       |       Guru        |
+| -------------------------- | :--------: | :-----: | :------------------: | :---------------: |
+| **Dashboard**              |  ✅ Full   | ✅ Full |     ✅ Terbatas      |    ✅ Terbatas    |
+| **Santri: lihat**          |     ✅     |   ✅    |   ✅ (kelas wali)    |        ❌         |
+| **Santri: tambah/edit**    |     ✅     |   ✅    |          ❌          |        ❌         |
+| **Santri: hapus (soft)**   |     ✅     |   ❌    |          ❌          |        ❌         |
+| **Mapel: lihat semua**     |     ✅     |   ✅    |          ✅          |        ✅         |
+| **Mapel: kelola**          |     ✅     |   ✅    |          ❌          |        ❌         |
+| **Jadwal: lihat**          |     ✅     |   ✅    |     ✅ (diampu)      |    ✅ (diampu)    |
+| **Jadwal: kelola**         |     ✅     |   ✅    |          ❌          |        ❌         |
+| **Absensi: input**         |     ✅     |   ✅    | ✅ (kelas wali+ampu) | ✅ (diampu+badal) |
+| **Absensi: rekap lihat**   |     ✅     |   ✅    |   ✅ (kelas wali)    |  ✅ (kelas ampu)  |
+| **Absensi: koreksi**       |     ✅     |   ✅    |          ❌          |        ❌         |
+| **Absensi: export**        |     ✅     |   ✅    |   ✅ (kelas wali)    |        ❌         |
+| **UKS: izin santri**       |     ✅     |   ✅    |          ❌          |        ❌         |
+| **Notifikasi alpha**       |     ✅     |   ✅    |          ❌          |        ❌         |
+| **Kalender libur**         |     ✅     |   ❌    |          ❌          |        ❌         |
+| **Pengaturan alpha**       |     ✅     |   ❌    |          ❌          |        ❌         |
+| **Backup status**          |     ✅     |   ❌    |          ❌          |        ❌         |
+| **Ganti password sendiri** |     ✅     |   ✅    |          ✅          |        ✅         |
 
 ### 12.2 Definisi Gate (Laravel Native) — identik dengan v4.0
 
@@ -1094,13 +1118,13 @@ Sumber CSS (urutan load di layout):
 
 Template Akademi menggunakan **Poppins** sebagai font utama (sudah di-import di `style.css`).
 
-| Kategori | Class Bootstrap/Custom | Keterangan |
-|---|---|---|
-| Judul halaman | `h4 fw-bold` dengan warna `var(--title)` | `--title: #303972` |
-| Sub-judul | `h5 fw-semibold` | Warna `var(--title)` |
-| Label / UI | `fs-14` atau `small` | Default Poppins |
-| Data tabel | `fs-14` | Default |
-| Metadata | `fs-12 text-muted` | Kecil, abu |
+| Kategori      | Class Bootstrap/Custom                   | Keterangan           |
+| ------------- | ---------------------------------------- | -------------------- |
+| Judul halaman | `h4 fw-bold` dengan warna `var(--title)` | `--title: #303972`   |
+| Sub-judul     | `h5 fw-semibold`                         | Warna `var(--title)` |
+| Label / UI    | `fs-14` atau `small`                     | Default Poppins      |
+| Data tabel    | `fs-14`                                  | Default              |
+| Metadata      | `fs-12 text-muted`                       | Kecil, abu           |
 
 > `--font-family-base: Poppins, sans-serif` sudah ditetapkan di `:root` dalam `style.css`. Tidak perlu re-deklarasi.
 
@@ -1109,27 +1133,43 @@ Template Akademi menggunakan **Poppins** sebagai font utama (sudah di-import di 
 ```css
 /* Sudah didefinisikan di public/css/style.css — jangan override di sini */
 :root {
-  --primary:          #4D44B5;   /* Ungu utama — tombol, nav aktif, aksen */
-  --primary-hover:    #3d3690;
-  --primary-dark:     #1e1a46;
-  --secondary:        #FB7D5B;   /* Coral/orange — aksen sekunder */
-  --title:            #303972;   /* Judul, heading */
+    --primary: #4d44b5; /* Ungu utama — tombol, nav aktif, aksen */
+    --primary-hover: #3d3690;
+    --primary-dark: #1e1a46;
+    --secondary: #fb7d5b; /* Coral/orange — aksen sekunder */
+    --title: #303972; /* Judul, heading */
 
-  /* RGBA variants sudah tersedia: --rgba-primary-1 s/d --rgba-primary-9 */
+    /* RGBA variants sudah tersedia: --rgba-primary-1 s/d --rgba-primary-9 */
 }
 ```
 
 **Override warna untuk PPNI** di `public/css/ppni-custom.css`:
+
 ```css
 /* public/css/ppni-custom.css */
 /* Badge status absensi */
-.badge-hadir  { background-color: #10b981; color: #fff; }
-.badge-alpha  { background-color: #ef4444; color: #fff; }
-.badge-sakit  { background-color: #f59e0b; color: #fff; }
-.badge-izin   { background-color: #3b82f6; color: #fff; }
+.badge-hadir {
+    background-color: #10b981;
+    color: #fff;
+}
+.badge-alpha {
+    background-color: #ef4444;
+    color: #fff;
+}
+.badge-sakit {
+    background-color: #f59e0b;
+    color: #fff;
+}
+.badge-izin {
+    background-color: #3b82f6;
+    color: #fff;
+}
 
 /* Row terkunci UKS */
-.row-locked td { background-color: #f8fafc !important; color: #94a3b8; }
+.row-locked td {
+    background-color: #f8fafc !important;
+    color: #94a3b8;
+}
 
 /* Override primary untuk warna brand PPNI jika perlu */
 /* Jika ingin mengubah warna utama dari ungu ke hijau pesantren: */
@@ -1139,13 +1179,13 @@ Template Akademi menggunakan **Poppins** sebagai font utama (sudah di-import di 
 
 ### 13.4 Mapping Token Warna Status
 
-| Status | Bootstrap Class | Custom Class | Penggunaan |
-|---|---|---|---|
-| Hadir | `badge bg-success` | `.badge-hadir` | Badge & row warna |
-| Alpha | `badge bg-danger` | `.badge-alpha` | Badge & row warna |
-| Sakit | `badge bg-warning text-dark` | `.badge-sakit` | Badge & row warna |
-| Izin | `badge bg-info text-dark` | `.badge-izin` | Badge & row warna |
-| Terkunci (UKS) | `table-secondary` | `.row-locked` | Row santri yang izin |
+| Status         | Bootstrap Class              | Custom Class   | Penggunaan           |
+| -------------- | ---------------------------- | -------------- | -------------------- |
+| Hadir          | `badge bg-success`           | `.badge-hadir` | Badge & row warna    |
+| Alpha          | `badge bg-danger`            | `.badge-alpha` | Badge & row warna    |
+| Sakit          | `badge bg-warning text-dark` | `.badge-sakit` | Badge & row warna    |
+| Izin           | `badge bg-info text-dark`    | `.badge-izin`  | Badge & row warna    |
+| Terkunci (UKS) | `table-secondary`            | `.row-locked`  | Row santri yang izin |
 
 ### 13.5 Layout Struktur Akademi
 
@@ -1375,6 +1415,7 @@ document.addEventListener('livewire:initialized', () => {
 ### 13.9 Komponen HTML Standar PPNI
 
 #### Card Header Halaman
+
 ```blade
 <div class="container-fluid">
     <div class="row page-titles">
@@ -1403,6 +1444,7 @@ document.addEventListener('livewire:initialized', () => {
 ```
 
 #### Tabel Data (DataTables)
+
 ```blade
 <table class="table table-responsive-md" id="ppni-table">
     <thead>
@@ -1442,6 +1484,7 @@ document.addEventListener('livewire:initialized', () => {
 ```
 
 #### Badge Status Absensi
+
 ```blade
 {{-- Gunakan helper atau Blade directive --}}
 @php
@@ -1458,6 +1501,7 @@ document.addEventListener('livewire:initialized', () => {
 ```
 
 #### Modal Konfirmasi (SweetAlert2)
+
 ```blade
 {{-- Trigger dari Livewire --}}
 <script>
@@ -1483,6 +1527,7 @@ document.addEventListener('livewire:initialized', () => {
 ```
 
 #### Form Input Standar
+
 ```blade
 <div class="mb-3">
     <label class="form-label fw-semibold">Nama Santri <span class="text-danger">*</span></label>
@@ -1499,6 +1544,7 @@ document.addEventListener('livewire:initialized', () => {
 ```
 
 #### Dashboard Stat Card
+
 ```blade
 <div class="col-xl-3 col-sm-6">
     <div class="card">
@@ -1553,22 +1599,22 @@ document.addEventListener('livewire:updated', function() {
 
 ## 14. Komponen Livewire — Katalog & Kontrak
 
-| Komponen | Route | Gate | Deskripsi |
-|---|---|---|---|
-| `LoginForm` | `/login` | — | Form login username + password |
-| `TodayScheduleWidget` | `/dashboard` | authenticated | Jadwal hari ini per guru, card Bootstrap |
-| `AlphaNotificationWidget` | `/dashboard` | `manage-notifications` | Widget notif alpha pending |
-| `StudentIndex` | `/students` | `manage-master-data` | Tabel Bootstrap + DataTables + search |
-| `StudentForm` | `/students/create` | `manage-master-data` | Form Bootstrap + SweetAlert2 |
-| `ScheduleIndex` | `/schedules` | authenticated | Jadwal per unit/hari |
-| `SubjectIndex` | `/subjects` | `view-subjects` | Daftar semua mapel (read-only) |
-| `StudentTake` | `/attendance/{scheduleId}` | `input-attendance` | Form absensi + Bootstrap badge status |
-| `AttendanceRecap` | `/recap/{classId}` | `view-class-recap` | Rekap + Bootstrap table + export |
-| `LeaveForm` | `/leaves` | `manage-leaves` | Input izin/sakit + Select2 santri |
-| `AlphaNotificationIndex` | `/notifications` | `manage-notifications` | Daftar notif + Toastr copy WA |
-| `SubstitutionForm` | `/substitutions` | `manage-master-data` | Assign guru badal + Select2 |
-| `CalendarManager` | `/system/calendar` | `manage-system` | FullCalendar 5.11 |
-| `SettingsAlpha` | `/system/settings` | `manage-system` | Form pengaturan threshold + template WA |
+| Komponen                  | Route                      | Gate                   | Deskripsi                                |
+| ------------------------- | -------------------------- | ---------------------- | ---------------------------------------- |
+| `LoginForm`               | `/login`                   | —                      | Form login username + password           |
+| `TodayScheduleWidget`     | `/dashboard`               | authenticated          | Jadwal hari ini per guru, card Bootstrap |
+| `AlphaNotificationWidget` | `/dashboard`               | `manage-notifications` | Widget notif alpha pending               |
+| `StudentIndex`            | `/students`                | `manage-master-data`   | Tabel Bootstrap + DataTables + search    |
+| `StudentForm`             | `/students/create`         | `manage-master-data`   | Form Bootstrap + SweetAlert2             |
+| `ScheduleIndex`           | `/schedules`               | authenticated          | Jadwal per unit/hari                     |
+| `SubjectIndex`            | `/subjects`                | `view-subjects`        | Daftar semua mapel (read-only)           |
+| `StudentTake`             | `/attendance/{scheduleId}` | `input-attendance`     | Form absensi + Bootstrap badge status    |
+| `AttendanceRecap`         | `/recap/{classId}`         | `view-class-recap`     | Rekap + Bootstrap table + export         |
+| `LeaveForm`               | `/leaves`                  | `manage-leaves`        | Input izin/sakit + Select2 santri        |
+| `AlphaNotificationIndex`  | `/notifications`           | `manage-notifications` | Daftar notif + Toastr copy WA            |
+| `SubstitutionForm`        | `/substitutions`           | `manage-master-data`   | Assign guru badal + Select2              |
+| `CalendarManager`         | `/system/calendar`         | `manage-system`        | FullCalendar 5.11                        |
+| `SettingsAlpha`           | `/system/settings`         | `manage-system`        | Form pengaturan threshold + template WA  |
 
 ### 14.1 Contoh Livewire View: StudentTake
 
@@ -1722,7 +1768,7 @@ Route::middleware('auth')->group(function () {
 
 ## 16. Migrasi, Seeding & Factory — tidak berubah dari v4.0
 
-*(Urutan migrasi, DatabaseSeeder, SubjectSeeder — identik dengan v4.0)*
+_(Urutan migrasi, DatabaseSeeder, SubjectSeeder — identik dengan v4.0)_
 
 ---
 
@@ -1791,21 +1837,21 @@ BACKUP_DISK=google
 
 ## 20. Glosarium Istilah Domain — tidak berubah dari v4.0
 
-| Istilah | Makna dalam Sistem |
-|---|---|
-| **Santri** | Siswa di pondok pesantren. |
-| **KBM** | Kegiatan Belajar Mengajar. |
-| **Guru Badal** | Guru pengganti. |
-| **Walikelas** | Guru yang bertanggung jawab atas satu kelas. |
-| **UKS** | Unit Kesehatan Sekolah — fitur izin/sakit. |
-| **Alpha** | Status tidak hadir tanpa keterangan. |
-| **Pusat Izin** | Halaman Admin untuk mencatat santri yang izin/sakit hari ini. |
+| Istilah                | Makna dalam Sistem                                                |
+| ---------------------- | ----------------------------------------------------------------- |
+| **Santri**             | Siswa di pondok pesantren.                                        |
+| **KBM**                | Kegiatan Belajar Mengajar.                                        |
+| **Guru Badal**         | Guru pengganti.                                                   |
+| **Walikelas**          | Guru yang bertanggung jawab atas satu kelas.                      |
+| **UKS**                | Unit Kesehatan Sekolah — fitur izin/sakit.                        |
+| **Alpha**              | Status tidak hadir tanpa keterangan.                              |
+| **Pusat Izin**         | Halaman Admin untuk mencatat santri yang izin/sakit hari ini.     |
 | **Tahun Ajaran Aktif** | `academic_years` dengan `is_active = true`. Hanya boleh ada satu. |
-| **Threshold Alpha** | Batas jumlah alpha yang memicu notifikasi. |
-| **Cutoff Time** | Pukul 14:00 WIB — batas input absensi manual. |
-| **Unit** | MTs atau MA. Data terisolasi per unit. |
-| **Denormalisasi** | Kolom `unit_id` yang ditambahkan untuk mendukung UnitScope. |
-| **Unique Code** | Format `{KODE_MAPEL}-{KELAS}-{TAHUN}`, misal `BIND-10A-25`. |
+| **Threshold Alpha**    | Batas jumlah alpha yang memicu notifikasi.                        |
+| **Cutoff Time**        | Pukul 14:00 WIB — batas input absensi manual.                     |
+| **Unit**               | MTs atau MA. Data terisolasi per unit.                            |
+| **Denormalisasi**      | Kolom `unit_id` yang ditambahkan untuk mendukung UnitScope.       |
+| **Unique Code**        | Format `{KODE_MAPEL}-{KELAS}-{TAHUN}`, misal `BIND-10A-25`.       |
 
 ---
 
@@ -1853,6 +1899,7 @@ public/
 ```
 
 File-file template yang **TIDAK digunakan** PPNI dan boleh diabaikan:
+
 - Semua views di `resources/views/akademi/` (ganti dengan Livewire views)
 - `resources/views/elements/` yang asli (buat ulang untuk PPNI)
 - `app/Http/Controllers/AkademiAdminController.php`
@@ -1865,15 +1912,15 @@ Template Akademi menggunakan ungu (`#4D44B5`) sebagai primary color. Jika ingin 
 ```css
 /* Ganti primary ke hijau pesantren */
 :root {
-    --primary:         #047857;  /* Emerald 700 */
-    --primary-hover:   #065f46;  /* Emerald 800 */
-    --primary-dark:    #022c22;  /* Emerald 950 */
-    --rgba-primary-1:  rgba(4, 120, 87, 0.1);
-    --rgba-primary-2:  rgba(4, 120, 87, 0.2);
-    --rgba-primary-3:  rgba(4, 120, 87, 0.3);
-    --rgba-primary-4:  rgba(4, 120, 87, 0.4);
-    --rgba-primary-5:  rgba(4, 120, 87, 0.5);
-    --title:           #1e3a2f;
+    --primary: #047857; /* Emerald 700 */
+    --primary-hover: #065f46; /* Emerald 800 */
+    --primary-dark: #022c22; /* Emerald 950 */
+    --rgba-primary-1: rgba(4, 120, 87, 0.1);
+    --rgba-primary-2: rgba(4, 120, 87, 0.2);
+    --rgba-primary-3: rgba(4, 120, 87, 0.3);
+    --rgba-primary-4: rgba(4, 120, 87, 0.4);
+    --rgba-primary-5: rgba(4, 120, 87, 0.5);
+    --title: #1e3a2f;
 }
 ```
 
@@ -1903,20 +1950,21 @@ Template asli menggunakan `config/dz.php` untuk manajemen asset per-halaman. Unt
 
 Masalah umum yang muncul saat menggabungkan Livewire 3 dengan jQuery:
 
-| Masalah | Penyebab | Solusi |
-|---|---|---|
-| MetisMenu sidebar collapse tidak berfungsi setelah Livewire update | Livewire diff DOM menghapus event handler jQuery | Gunakan `Livewire.hook('morph.updated', () => { ... })` untuk re-init |
-| DataTables reset setelah `wire:model` update | Livewire re-render tabel DOM | Destroy & re-init DataTable di `livewire:updated` event |
-| SweetAlert tidak muncul | jQuery plugin belum terpanggil saat Livewire boot | Gunakan `document.addEventListener('livewire:initialized', ...)` |
-| Select2 tidak muncul | Sama dengan SweetAlert | Re-init Select2 di `livewire:updated` |
+| Masalah                                                            | Penyebab                                          | Solusi                                                                |
+| ------------------------------------------------------------------ | ------------------------------------------------- | --------------------------------------------------------------------- |
+| MetisMenu sidebar collapse tidak berfungsi setelah Livewire update | Livewire diff DOM menghapus event handler jQuery  | Gunakan `Livewire.hook('morph.updated', () => { ... })` untuk re-init |
+| DataTables reset setelah `wire:model` update                       | Livewire re-render tabel DOM                      | Destroy & re-init DataTable di `livewire:updated` event               |
+| SweetAlert tidak muncul                                            | jQuery plugin belum terpanggil saat Livewire boot | Gunakan `document.addEventListener('livewire:initialized', ...)`      |
+| Select2 tidak muncul                                               | Sama dengan SweetAlert                            | Re-init Select2 di `livewire:updated`                                 |
 
 **Pattern re-init jQuery plugins setelah Livewire:**
+
 ```js
 // Letakkan di public/js/custom.js atau di @push('scripts')
-document.addEventListener('livewire:updated', function() {
+document.addEventListener("livewire:updated", function () {
     // Re-init MetisMenu
-    if (typeof $.fn.metisMenu !== 'undefined') {
-        $('#menu').metisMenu();
+    if (typeof $.fn.metisMenu !== "undefined") {
+        $("#menu").metisMenu();
     }
 });
 ```
@@ -1925,16 +1973,16 @@ document.addEventListener('livewire:updated', function() {
 
 ## Changelog Blueprint
 
-| Versi | Perubahan Utama |
-|---|---|
-| **v1.0** | Blueprint awal — arsitektur dasar, core logic, UI/UX, cron, gates |
-| **v2.0** | + Tabel absensi lengkap; + `academic_year_id` di pivot; + settings; + notification_queue |
-| **v3.0** | + Latar belakang & tujuan; + peta aktor; + SQL DDL; + Job, Observer, Command; + testing guide |
-| **v4.0** | + Fix 5 bug kritis; + `subjects.code`; + `attendance_logs`; + `schedules.unique_code`; + Gates native; + PHP 8.5 |
+| Versi    | Perubahan Utama                                                                                                                                                                                                                                                                       |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **v1.0** | Blueprint awal — arsitektur dasar, core logic, UI/UX, cron, gates                                                                                                                                                                                                                     |
+| **v2.0** | + Tabel absensi lengkap; + `academic_year_id` di pivot; + settings; + notification_queue                                                                                                                                                                                              |
+| **v3.0** | + Latar belakang & tujuan; + peta aktor; + SQL DDL; + Job, Observer, Command; + testing guide                                                                                                                                                                                         |
+| **v4.0** | + Fix 5 bug kritis; + `subjects.code`; + `attendance_logs`; + `schedules.unique_code`; + Gates native; + PHP 8.5                                                                                                                                                                      |
 | **v5.0** | + **Migrasi CSS Framework: Tailwind → Bootstrap 5 + Akademi Template (DexignLab)**; + Section 21 Panduan Integrasi Template; + Update Section 5.1, 5.4, 7.1, 13, 14 mengikuti struktur Bootstrap/Akademi; + Custom CSS PPNI di `ppni-custom.css`; + Panduan konflik Livewire + jQuery |
 
 ---
 
-*— Akhir Dokumen Blueprint PPNI System v5.0 —*
+_— Akhir Dokumen Blueprint PPNI System v5.0 —_
 
 > **Untuk AI Agent (Copilot):** Baca dokumen ini dari awal hingga akhir sebelum menulis satu baris kode pun. Perhatikan khusus: (1) CSS Framework adalah **Bootstrap 5**, bukan Tailwind — jangan pernah tulis class Tailwind; (2) jQuery sudah tersedia global dari template — jangan install via npm; (3) UnitScope hanya bekerja pada model dengan `unit_id` langsung; (4) `upsert()` tidak trigger Eloquent events — dispatch Job manual; (5) `ppni:auto-alpha-guru` hanya tandai guru yang punya jadwal hari ini; (6) Re-init jQuery plugins setelah setiap Livewire DOM update.
