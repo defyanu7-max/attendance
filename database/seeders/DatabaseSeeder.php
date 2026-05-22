@@ -14,19 +14,23 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // --- Units ---
-        $mts = Unit::create(['name' => 'MTs']);
-        $ma = Unit::create(['name' => 'MA']);
+        $mts = Unit::firstOrCreate(['name' => 'MTs']);
+        $ma = Unit::firstOrCreate(['name' => 'MA']);
 
         // --- Academic Year ---
-        AcademicYear::create([
-            'name' => '2025/2026',
-            'start_date' => '2025-07-14',
-            'end_date' => '2026-06-20',
-            'is_active' => true,
-        ]);
+        AcademicYear::updateOrCreate(
+            ['name' => '2025/2026'],
+            [
+                'start_date' => '2025-07-14',
+                'end_date' => '2026-06-20',
+                'is_active' => true,
+            ]
+        );
 
         // --- Users ---
         $this->call(UserSeeder::class);
+        // --- Tester accounts for all units ---
+        $this->call(TesterAccountsSeeder::class);
 
         // --- Settings ---
         $settings = [
@@ -69,7 +73,10 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($settings as $setting) {
-            Setting::create($setting);
+            Setting::updateOrCreate(
+                ['key' => $setting['key']],
+                $setting
+            );
         }
     }
 }

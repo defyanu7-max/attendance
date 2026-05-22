@@ -115,12 +115,14 @@ class StudentForm extends Component
                 ->get();
         }
 
-        $units = $user->isSuperadmin() ? Unit::all() : collect();
+        $isSuperadmin = method_exists($user, 'isSuperadmin') && $user->isSuperadmin();
+
+        $units = $isSuperadmin ? Unit::all() : collect();
 
         return view('livewire.master.student-form', [
             'classes' => $classes,
             'units' => $units,
-            'isSuperadmin' => $user->isSuperadmin(),
+            'isSuperadmin' => $isSuperadmin,
         ]);
     }
 }

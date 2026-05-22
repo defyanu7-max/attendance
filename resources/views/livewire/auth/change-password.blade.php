@@ -21,7 +21,7 @@
                     </h4>
                 </div>
                 <div class="card-body">
-                    <form wire:submit="updatePassword">
+                    <form wire:submit.prevent="updatePassword">
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Password Saat Ini <span class="text-danger">*</span></label>
                             <input type="password" wire:model="current_password"

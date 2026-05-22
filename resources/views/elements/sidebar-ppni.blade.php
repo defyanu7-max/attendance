@@ -35,13 +35,14 @@
 
             {{-- Data Master (Admin+) --}}
             @can('manage-master-data')
-            <li class="{{ request()->routeIs('students.*', 'classes.*', 'substitutions.*') ? 'mm-active' : '' }}">
+            <li class="{{ request()->routeIs('students.*', 'teachers.*', 'classes.*', 'substitutions.*') ? 'mm-active' : '' }}">
                 <a class="has-arrow" href="javascript:void(0);" aria-expanded="false">
                     <i class="bi bi-people"></i>
                     <span class="nav-text">Data Master</span>
                 </a>
                 <ul aria-expanded="false">
                     <li><a href="{{ route('students.index') }}">Santri</a></li>
+                    <li><a href="{{ route('teachers.index') }}">Guru</a></li>
                     <li><a href="{{ route('classes.index') }}">Kelas</a></li>
                     <li><a href="{{ route('substitutions.index') }}">Guru Badal</a></li>
                 </ul>

@@ -5,6 +5,9 @@ namespace App\Providers;
 use App\Models\User;
 use App\Models\Classes;
 use App\Models\Schedule;
+use App\Models\Student;
+use App\Models\StudentAttendance;
+use App\Observers\StudentAttendanceObserver;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // --- Observer Registration ---
+        StudentAttendance::observe(StudentAttendanceObserver::class);
+
         // --- Gate Definitions (from Blueprint Section 12.2) ---
 
         Gate::define('manage-master-data', fn(User $user) =>
@@ -33,9 +39,21 @@ class AppServiceProvider extends ServiceProvider
             $user->role === 'superadmin'
         );
 
-        Gate::define('delete-student', fn(User $user) =>
-            $user->role === 'superadmin'
-        );
+        Gate::define('delete-student', function (User $user, ?Student $student = null) {
+            if ($user->role === 'superadmin') return true;
+            if ($user->role === 'admin') {
+                return $student ? $student->unit_id === $user->unit_id : true;
+            }
+            return false;
+        });
+
+        Gate::define('delete-teacher', function (User $user, ?User $teacher = null) {
+            if ($user->role === 'superadmin') return true;
+            if ($user->role === 'admin') {
+                return $teacher ? $teacher->unit_id === $user->unit_id : true;
+            }
+            return false;
+        });
 
         Gate::define('view-class-recap', function (User $user, Classes $class) {
             if (in_array($user->role, ['superadmin', 'admin'])) return true;

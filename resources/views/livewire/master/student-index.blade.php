@@ -92,7 +92,7 @@
                                            class="btn btn-primary btn-xs sharp me-1">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        @if($canDelete)
+                                        @if(Gate::allows('delete-student', $student))
                                         <button wire:click="confirmDelete({{ $student->id }})"
                                                 class="btn btn-danger btn-xs sharp">
                                             <i class="bi bi-trash"></i>

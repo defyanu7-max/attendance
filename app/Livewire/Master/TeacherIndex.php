@@ -45,9 +45,10 @@ class TeacherIndex extends Component
     #[On('delete-teacher')]
     public function delete($id)
     {
-        Gate::authorize('manage-system'); // Hanya Superadmin atau sesuaikan kebijakan
-
+        $id = is_array($id) ? ($id['id'] ?? reset($id)) : $id;
         $teacher = User::findOrFail($id);
+        Gate::authorize('delete-teacher', $teacher);
+
         if ($teacher->role === 'guru') {
             $teacher->delete();
             $this->dispatch('notify', type: 'success', message: 'Data guru berhasil dihapus.');

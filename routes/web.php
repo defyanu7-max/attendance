@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\ExcelExportController;
+use App\Http\Controllers\RecapExportController;
 use App\Livewire\Auth\LoginForm;
 use App\Livewire\Auth\ChangePassword;
 use App\Livewire\Dashboard\Dashboard;
@@ -11,6 +12,7 @@ use App\Livewire\Academic\SubjectIndex;
 use App\Livewire\Academic\StudentTake;
 use App\Livewire\Academic\AttendanceRecap;
 use App\Livewire\Academic\SubstitutionForm;
+use App\Livewire\Academic\MapelJadwalManager;
 use App\Livewire\Master\StudentIndex;
 use App\Livewire\Master\StudentForm;
 use App\Livewire\Master\ClassIndex;
@@ -45,6 +47,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/subjects', SubjectIndex::class)->name('subjects.index');
     Route::get('/attendance/{schedule}', StudentTake::class)->name('attendance.take');
     Route::get('/recap/{class?}', AttendanceRecap::class)->name('attendance.recap');
+    Route::get('/recap-export', RecapExportController::class)->name('recap.export');
+
+    // Akademik — Admin+ (Mapel & Jadwal combined page)
+    Route::get('/akademik/mapel-jadwal', MapelJadwalManager::class)
+        ->name('akademik.mapel-jadwal')
+        ->middleware('can:manage-master-data');
 
     // Master data — Admin+
     Route::middleware('can:manage-master-data')->group(function () {

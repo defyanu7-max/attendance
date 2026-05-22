@@ -16,7 +16,7 @@
                     <h4 class="card-title text-white mb-0"><i class="bi bi-file-earmark-excel me-2"></i> Import Data Massal</h4>
                 </div>
                 <div class="card-body">
-                    <form wire:submit="import">
+                    <form wire:submit.prevent="import">
                         <div class="row mb-4">
                             <div class="col-md-6 mb-3 mb-md-0">
                                 <label class="form-label fw-bold">Jenis Data <span class="text-danger">*</span></label>
@@ -27,7 +27,7 @@
                                 @error('type') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
 
-                            @if(auth()->user()->role === 'superadmin')
+                            @if($isSuperadmin)
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Pilih Unit (Opsional)</label>
                                 <select class="form-select" wire:model="unitId">
@@ -42,12 +42,23 @@
 
                         <div class="mb-4">
                             <label class="form-label fw-bold">File Excel (.xlsx, .xls) <span class="text-danger">*</span></label>
-                            <input type="file" class="form-control @error('file') is-invalid @enderror" wire:model="file" accept=".xlsx,.xls">
+                            <input type="file" class="form-control @error('file') is-invalid @enderror" wire:model="file" accept=".xlsx,.xls" @if($isSuperadmin && $units->isEmpty()) disabled @endif>
                             <div wire:loading wire:target="file" class="text-primary mt-1" style="font-size: 13px;">
                                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Mengunggah file, mohon tunggu...
                             </div>
                             @error('file') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
+
+                        @if($isSuperadmin && $units->isEmpty())
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle me-1"></i>
+                                Tidak ada unit tersedia. Silakan tambahkan unit terlebih dahulu sebelum mengimpor.
+                                <div class="mt-2" style="font-size:13px">
+                                    Cara cepat: jalankan seeder unit di mesin Anda:
+                                    <pre style="display:inline-block;margin:0;padding:.25rem .5rem;background:#f8f9fa;border-radius:.25rem"><code>php artisan db:seed --class=DatabaseSeeder</code></pre>
+                                </div>
+                            </div>
+                        @endif
 
                         <div class="alert alert-info mb-4">
                             <i class="bi bi-info-circle me-1"></i> Pastikan format file sesuai dengan template.
@@ -64,7 +75,7 @@
                         </div>
 
                         <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-success px-4" wire:loading.attr="disabled">
+                            <button type="submit" class="btn btn-success px-4" wire:loading.attr="disabled" @if($isSuperadmin && $units->isEmpty()) disabled @endif>
                                 <span wire:loading.remove wire:target="import">
                                     <i class="bi bi-upload me-1"></i> Import Sekarang
                                 </span>

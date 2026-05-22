@@ -78,7 +78,7 @@ class TeacherForm extends Component
             session()->flash('message', 'Data guru berhasil diperbarui.');
         } else {
             User::create($data);
-            session()->flash('message', 'Data guru berhasil ditambahkan.');
+            $this->dispatch('notify', type: 'success', message: 'Data guru berhasil ditambahkan');
         }
 
         return redirect()->route('teachers.index');

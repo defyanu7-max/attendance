@@ -109,13 +109,14 @@ class ClassIndex extends Component
             ->orderBy('name')
             ->get();
 
-        $units = $user->isSuperadmin() ? Unit::all() : collect();
+        $isSuperadmin = method_exists($user, 'isSuperadmin') && $user->isSuperadmin();
+        $units = $isSuperadmin ? Unit::all() : collect();
 
         return view('livewire.master.class-index', [
             'classes' => $classes,
             'teachers' => $teachers,
             'units' => $units,
-            'isSuperadmin' => $user->isSuperadmin(),
+            'isSuperadmin' => $isSuperadmin,
             'activeYear' => $activeYear,
         ]);
     }

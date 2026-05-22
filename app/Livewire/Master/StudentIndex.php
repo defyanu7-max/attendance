@@ -39,15 +39,16 @@ class StudentIndex extends Component
 
     public function confirmDelete(int $id): void
     {
-        Gate::authorize('delete-student');
         $student = Student::findOrFail($id);
+        Gate::authorize('delete-student', $student);
         $this->dispatch('confirm-delete', id: $id, name: $student->name);
     }
 
     public function delete(int $id): void
     {
-        Gate::authorize('delete-student');
-        Student::findOrFail($id)->delete();
+        $student = Student::findOrFail($id);
+        Gate::authorize('delete-student', $student);
+        $student->delete();
         $this->dispatch('notify', type: 'success', message: 'Santri berhasil dihapus.');
     }
 

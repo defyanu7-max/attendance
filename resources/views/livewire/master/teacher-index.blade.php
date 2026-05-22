@@ -82,8 +82,8 @@
                                         <a href="{{ route('teachers.edit', $teacher->id) }}" class="btn btn-sm btn-outline-primary" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        @if(auth()->user()->role === 'superadmin')
-                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete({{ $teacher->id }})" title="Hapus">
+                                        @if(Gate::allows('delete-teacher', $teacher))
+                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete('{{ $teacher->id }}')" title="Hapus">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                         @endif

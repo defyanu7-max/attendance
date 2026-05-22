@@ -10,7 +10,7 @@
                         <p class="text-muted">Sistem Absensi KBM — Pondok Pesantren</p>
                     </div>
 
-                    <form wire:submit="login">
+                    <form wire:submit.prevent="login">
                         <div class="mb-3">
                             <label class="form-label fw-semibold">
                                 <i class="bi bi-person me-1"></i> Username / NIP

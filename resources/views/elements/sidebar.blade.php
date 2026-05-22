@@ -24,7 +24,7 @@
 
             {{-- Data Master (Admin+) --}}
             @can('manage-master-data')
-            <li class="{{ request()->routeIs('students.*', 'classes.*', 'teachers.*', 'substitutions.*') ? 'mm-active' : '' }}">
+            <li class="{{ request()->routeIs('students.*', 'classes.*', 'teachers.*', 'substitutions.*', 'akademik.mapel-jadwal') ? 'mm-active' : '' }}">
                 <a class="has-arrow" href="javascript:void(0);" aria-expanded="false">
                     <i class="bi bi-people"></i>
                     <span class="nav-text">Data Master</span>
@@ -33,18 +33,11 @@
                     <li><a href="{{ route('students.index') }}">Santri</a></li>
                     <li><a href="{{ route('teachers.index') }}">Guru</a></li>
                     <li><a href="{{ route('classes.index') }}">Kelas</a></li>
+                    <li><a href="{{ route('akademik.mapel-jadwal') }}">Mata Pelajaran & Jadwal</a></li>
                     <li><a href="{{ route('substitutions.index') }}">Guru Badal</a></li>
                 </ul>
             </li>
             @endcan
-
-            {{-- Mata Pelajaran (semua role) --}}
-            <li class="{{ request()->routeIs('subjects.*') ? 'mm-active' : '' }}">
-                <a href="{{ route('subjects.index') }}">
-                    <i class="bi bi-book"></i>
-                    <span class="nav-text">Mata Pelajaran</span>
-                </a>
-            </li>
 
             {{-- UKS & Notifikasi (Admin+) --}}
             @can('manage-leaves')

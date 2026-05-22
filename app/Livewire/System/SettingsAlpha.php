@@ -30,7 +30,10 @@ class SettingsAlpha extends Component
         $this->alpha_threshold_mode = Setting::getValue('alpha_threshold_mode', 'cumulative');
         $this->alpha_threshold_count = (int) Setting::getValue('alpha_threshold_count', '5');
         $this->attendance_cutoff_time = Setting::getValue('attendance_cutoff_time', '14:00');
-        $this->wa_notification_enabled = Setting::getValue('wa_notification_enabled', 'true');
+        
+        $waVal = Setting::getValue('wa_notification_enabled', 'true');
+        $this->wa_notification_enabled = is_bool($waVal) ? ($waVal ? 'true' : 'false') : (string) $waVal;
+        
         $this->wa_message_template = Setting::getValue('wa_message_template', '');
         
         $weekendDays = Setting::getValue('default_weekend_days', [0, 6]);
@@ -67,26 +70,33 @@ class SettingsAlpha extends Component
 
             // Convert raw DB string to PHP value for comparison
             $oldValueConverted = $oldValue;
+            $newValueConverted = $newValue;
+
             if ($type === 'json') {
-                $oldValueConverted = json_decode($oldValue, true);
+                $oldValueConverted = $oldValue ? json_decode($oldValue, true) : null;
+                // $newValue is already an array
             } elseif ($type === 'integer') {
-                $oldValueConverted = (int) $oldValue;
+                $oldValueConverted = $oldValue !== null ? (int) $oldValue : null;
+                $newValueConverted = (int) $newValue;
             } elseif ($type === 'boolean') {
-                $oldValueConverted = filter_var($oldValue, FILTER_VALIDATE_BOOLEAN);
+                $oldValueConverted = $oldValue !== null ? filter_var($oldValue, FILTER_VALIDATE_BOOLEAN) : null;
+                $newValueConverted = filter_var($newValue, FILTER_VALIDATE_BOOLEAN);
             }
 
-            // Compare PHP values (using relaxed comparison for basic types, strict for arrays after normalization)
+            // Compare PHP values
             $changed = false;
             if (is_array($newValue)) {
-                sort($oldValueConverted);
-                sort($newValue);
-                $changed = ($oldValueConverted !== $newValue);
+                $oldArr = is_array($oldValueConverted) ? $oldValueConverted : [];
+                sort($oldArr);
+                $newArr = $newValue;
+                sort($newArr);
+                $changed = ($oldArr !== $newArr);
             } else {
-                $changed = ($oldValueConverted != $newValue);
+                $changed = ($oldValueConverted !== $newValueConverted);
             }
 
             if ($changed) {
-                // Update using helper (handles encoding)
+                // Update or create using helper
                 Setting::setValue($key, $newValue);
 
                 // Log change with string representations

@@ -17,7 +17,7 @@
                     <h4 class="card-title">{{ $isEdit ? 'Edit Data Guru' : 'Tambah Guru Baru' }}</h4>
                 </div>
                 <div class="card-body">
-                    <form wire:submit="save">
+                    <form wire:submit.prevent="save">
                         <div class="mb-3">
                             <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" wire:model="name" placeholder="Contoh: Ustadz Fulan">
@@ -31,9 +31,10 @@
                                 @error('username') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             
+                            @if(auth()->user()->role === 'superadmin')
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Unit <span class="text-danger">*</span></label>
-                                <select class="form-select @error('unit_id') is-invalid @enderror" wire:model="unit_id" @if(auth()->user()->role !== 'superadmin') disabled @endif>
+                                <select class="form-select @error('unit_id') is-invalid @enderror" wire:model="unit_id">
                                     <option value="">-- Pilih Unit --</option>
                                     @foreach($units as $unit)
                                         <option value="{{ $unit->id }}">{{ $unit->name }}</option>
@@ -41,10 +42,17 @@
                                 </select>
                                 @error('unit_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
+                            @else
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Unit</label>
+                                <div class="form-control-plaintext">{{ auth()->user()->unit?->name ?? '-' }}</div>
+                                <input type="hidden" wire:model="unit_id" />
+                            </div>
+                            @endif
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6 mb-3"
                                 <label class="form-label">Password {{ $isEdit ? '(Opsional)' : '<span class="text-danger">*</span>' }}</label>
                                 <input type="password" class="form-control @error('password') is-invalid @enderror" wire:model="password" placeholder="{{ $isEdit ? 'Kosongkan jika tidak ingin mengubah' : 'Minimal 6 karakter' }}">
                                 @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror

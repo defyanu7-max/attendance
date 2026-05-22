@@ -29,7 +29,7 @@ class DataImport extends Component
     #[Url]
     public string $type = 'students'; // students | teachers
 
-    public string $unitId = '';
+    public ?int $unitId = null;
 
     public function mount()
     {
@@ -43,7 +43,16 @@ class DataImport extends Component
             'type' => 'required|in:students,teachers',
         ]);
 
-        $uId = $this->unitId ?: (Auth::user()->unit_id ?? Unit::first()->id);
+        $user = Auth::user();
+        $userUnitId = $user->unit_id ?? null;
+        $firstUnitId = Unit::first()?->id;
+        $uId = $this->unitId ?? $userUnitId ?? $firstUnitId;
+
+        if (!$uId) {
+            $this->dispatch('notify', type: 'error', message: 'Tidak ada unit tersedia. Silakan tambah unit terlebih dahulu.');
+            return;
+        }
+
         $filePath = $this->file->getRealPath();
 
         if ($this->type === 'students') {
@@ -173,7 +182,13 @@ class DataImport extends Component
 
     public function render()
     {
-        $units = Unit::all();
-        return view('livewire.master.data-import', compact('units'));
+        $user = Auth::user();
+        $isSuperadmin = method_exists($user, 'isSuperadmin') && $user->isSuperadmin();
+        $units = $isSuperadmin ? Unit::all() : collect();
+
+        return view('livewire.master.data-import', [
+            'units' => $units,
+            'isSuperadmin' => $isSuperadmin,
+        ]);
     }
 }

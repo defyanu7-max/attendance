@@ -23,7 +23,7 @@
                     </h4>
                 </div>
                 <div class="card-body">
-                    <form wire:submit="save">
+                    <form wire:submit.prevent="save">
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold">NIS <span class="text-danger">*</span></label>

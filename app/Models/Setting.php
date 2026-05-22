@@ -9,7 +9,7 @@ class Setting extends Model
     // No UnitScope — global config
     public $timestamps = false;
 
-    protected $fillable = ['key', 'value', 'type', 'description'];
+    protected $fillable = ['key', 'value', 'type', 'description', 'updated_at'];
 
     protected $casts = [
         'updated_at' => 'datetime',
@@ -36,12 +36,16 @@ class Setting extends Model
      */
     public static function setValue(string $key, mixed $value): void
     {
-        $setting = static::where('key', $key)->first();
-        if ($setting) {
-            $setting->update([
-                'value' => is_array($value) ? json_encode($value) : (string) $value,
+        $strValue = is_array($value) ? json_encode($value) : (string) $value;
+        $type = is_array($value) ? 'json' : (in_array($strValue, ['true', 'false'], true) ? 'boolean' : (is_numeric($strValue) ? 'integer' : 'string'));
+
+        static::updateOrCreate(
+            ['key' => $key],
+            [
+                'value' => $strValue,
+                'type' => static::where('key', $key)->value('type') ?? $type,
                 'updated_at' => now(),
-            ]);
-        }
+            ]
+        );
     }
 }

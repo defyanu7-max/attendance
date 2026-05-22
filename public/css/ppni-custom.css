@@ -19,8 +19,11 @@
 .bg-info-light    { background-color: rgba(59, 130, 246, 0.1); }
 
 /* Font size utilities */
+.fs-11 { font-size: 11px !important; }
 .fs-12 { font-size: 12px !important; }
+.fs-13 { font-size: 13px !important; }
 .fs-14 { font-size: 14px !important; }
+.fs-28 { font-size: 28px !important; }
 .fs-32 { font-size: 32px !important; }
 
 /* Login page custom */
@@ -35,4 +38,72 @@
     display: flex;
     align-items: center;
     height: 100%;
+}
+
+/* =============================================
+   Rekap Absensi — Table Styles (R-09)
+   ============================================= */
+
+/* Sticky column kiri pada tabel rekap */
+.recap-scroll-container .sticky-col {
+    position: sticky !important;
+    left: 0;
+    background: #fff;
+    z-index: 1;
+    box-shadow: 2px 0 4px rgba(0,0,0,0.08);
+}
+
+/* Row alpha kritis — highlight lembut */
+.table-danger .sticky-col {
+    background: #fff5f5 !important;
+}
+
+/* Header minggu pada mode per-tanggal */
+thead tr:first-child th.border-start {
+    border-left: 2px solid #dee2e6 !important;
+}
+
+/* Recap scroll container — subtle scrollbar */
+.recap-scroll-container::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.recap-scroll-container::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 3px;
+}
+
+.recap-scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Summary cards transition on hover */
+.row.g-3 > [class*="col-"] .card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.row.g-3 > [class*="col-"] .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+}
+
+/* Recap badge spacing in subject mode */
+.recap-scroll-container .badge + .badge {
+    margin-top: 2px;
+}
+
+/* Progress bar mini in recap table */
+.recap-scroll-container .progress {
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+/* Critical alpha panel styling */
+.card.border-danger {
+    border-width: 2px !important;
+}
+
+.card.border-danger .card-header.bg-danger {
+    border-bottom: none;
 }

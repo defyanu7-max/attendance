@@ -23,7 +23,7 @@
                     </h4>
                 </div>
                 <div class="card-body">
-                    <form wire:submit="save">
+                    <form wire:submit.prevent="save">
                         {{-- Alpha Threshold Mode --}}
                         <div class="mb-4">
                             <label class="form-label fw-semibold">Mode Hitung Alpha</label>
