@@ -5,15 +5,16 @@ namespace App\Models\Scopes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Support\Facades\Auth;
 
 class UnitScope implements Scope
 {
     public function apply(Builder $builder, Model $model): void
     {
         if (app()->runningInConsole()) return;
-        if (! auth()->hasUser()) return;
+        if (! Auth::hasUser()) return;
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         if ($user->role === 'superadmin') return;
         if (! $user->unit_id) return;
