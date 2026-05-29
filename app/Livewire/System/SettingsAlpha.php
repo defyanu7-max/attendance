@@ -63,18 +63,24 @@ class SettingsAlpha extends Component
             'default_weekend_days' => $this->default_weekend_days,
         ];
 
-        foreach ($settings as $key => $newValue) {
-            $setting = Setting::where('key', $key)->first();
-            $oldValue = $setting?->value; // raw string from DB
-            $type = $setting?->type ?? 'string';
+        // Fetch semua setting yang relevan dalam SATU query — bukan 1 query per key di loop
+        $existingSettings = Setting::whereIn('key', array_keys($settings))
+            ->get()
+            ->keyBy('key');
 
-            // Convert raw DB string to PHP value for comparison
+        $logsToInsert = [];
+
+        foreach ($settings as $key => $newValue) {
+            $setting  = $existingSettings->get($key);
+            $oldValue = $setting?->value; // raw string dari DB
+            $type     = $setting?->type ?? 'string';
+
+            // Konversi nilai DB (raw string) ke tipe PHP untuk perbandingan
             $oldValueConverted = $oldValue;
             $newValueConverted = $newValue;
 
             if ($type === 'json') {
                 $oldValueConverted = $oldValue ? json_decode($oldValue, true) : null;
-                // $newValue is already an array
             } elseif ($type === 'integer') {
                 $oldValueConverted = $oldValue !== null ? (int) $oldValue : null;
                 $newValueConverted = (int) $newValue;
@@ -83,7 +89,7 @@ class SettingsAlpha extends Component
                 $newValueConverted = filter_var($newValue, FILTER_VALIDATE_BOOLEAN);
             }
 
-            // Compare PHP values
+            // Bandingkan nilai PHP
             $changed = false;
             if (is_array($newValue)) {
                 $oldArr = is_array($oldValueConverted) ? $oldValueConverted : [];
@@ -96,17 +102,23 @@ class SettingsAlpha extends Component
             }
 
             if ($changed) {
-                // Update or create using helper
                 Setting::setValue($key, $newValue);
 
-                // Log change with string representations
-                SettingsLog::create([
-                    'key' => $key,
-                    'old_value' => is_array($oldValueConverted) ? json_encode($oldValueConverted) : (string) $oldValueConverted,
-                    'new_value' => is_array($newValue) ? json_encode($newValue) : (string) $newValue,
-                    'changed_by' => Auth::id() ?? 1, // Fallback to 1 if auth is weird
-                ]);
+                // Kumpulkan log untuk di-insert sekali setelah loop
+                $logsToInsert[] = [
+                    'key'        => $key,
+                    'old_value'  => is_array($oldValueConverted) ? json_encode($oldValueConverted) : (string) $oldValueConverted,
+                    'new_value'  => is_array($newValue) ? json_encode($newValue) : (string) $newValue,
+                    'changed_by' => Auth::id(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
             }
+        }
+
+        // Bulk insert semua log sekaligus — bukan 1 insert per perubahan
+        if (! empty($logsToInsert)) {
+            SettingsLog::insert($logsToInsert);
         }
 
         $this->dispatch('notify', type: 'success', message: 'Pengaturan berhasil disimpan.');

@@ -26,7 +26,20 @@
                     <h4 class="card-title mb-0">
                         <i class="bi bi-bell me-2"></i> Daftar Notifikasi
                     </h4>
-                    <div>
+                    <div class="d-flex align-items-center gap-2">
+                        @if($statusFilter === 'pending' && $pendingCount > 0)
+                        <button wire:click="sendAllPending"
+                                wire:loading.attr="disabled"
+                                wire:confirm="Dispatch job pengiriman semua {{ $pendingCount }} notifikasi pending ke queue?"
+                                class="btn btn-success btn-sm">
+                            <span wire:loading.remove wire:target="sendAllPending">
+                                <i class="bi bi-send-fill me-1"></i> Kirim Semua ({{ $pendingCount }})
+                            </span>
+                            <span wire:loading wire:target="sendAllPending">
+                                <span class="spinner-border spinner-border-sm me-1"></span> Mengirim...
+                            </span>
+                        </button>
+                        @endif
                         <select wire:model.live="statusFilter" class="form-select form-select-sm" style="width: 150px;">
                             <option value="pending">Pending</option>
                             <option value="sent">Terkirim</option>
@@ -91,9 +104,21 @@
                                                         title="Salin pesan WA">
                                                     <i class="bi bi-clipboard"></i>
                                                 </button>
-                                                <button wire:click="markAsSent({{ $notif->id }})"
+                                                <button wire:click="sendNow({{ $notif->id }})"
+                                                        wire:loading.attr="disabled"
+                                                        wire:target="sendNow({{ $notif->id }})"
                                                         class="btn btn-success btn-xs me-1"
-                                                        title="Tandai terkirim">
+                                                        title="Kirim Sekarang">
+                                                    <span wire:loading.remove wire:target="sendNow({{ $notif->id }})">
+                                                        <i class="bi bi-send"></i>
+                                                    </span>
+                                                    <span wire:loading wire:target="sendNow({{ $notif->id }})">
+                                                        <span class="spinner-border spinner-border-sm"></span>
+                                                    </span>
+                                                </button>
+                                                <button wire:click="markAsSent({{ $notif->id }})"
+                                                        class="btn btn-outline-success btn-xs me-1"
+                                                        title="Tandai terkirim (manual)">
                                                     <i class="bi bi-check2"></i>
                                                 </button>
                                                 <button wire:click="dismiss({{ $notif->id }})"

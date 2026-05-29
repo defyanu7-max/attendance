@@ -14,7 +14,7 @@ class LoginForm extends Component
     public string $username = '';
     public string $password = '';
 
-    public function login(): void
+    public function login()
     {
         $this->validate([
             'username' => 'required|string',
@@ -26,7 +26,7 @@ class LoginForm extends Component
             'password' => $this->password,
         ])) {
             session()->regenerate();
-            $this->redirect(route('dashboard'), navigate: true);
+            return redirect()->intended(route('dashboard'));
         } else {
             $this->addError('username', 'Username atau password salah.');
         }

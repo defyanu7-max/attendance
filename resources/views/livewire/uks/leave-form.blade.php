@@ -74,7 +74,34 @@
                         </div>
                     </div>
 
-                    {{-- Notes --}}
+                    {{-- Date Range --}}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Rentang Tanggal <span class="text-danger">*</span></label>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="form-label text-muted fs-12 mb-1">Dari Tanggal</label>
+                                <input type="date" wire:model.live="startDate" class="form-control @error('startDate') is-invalid @enderror">
+                                @error('startDate')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label text-muted fs-12 mb-1">Sampai Tanggal</label>
+                                <input type="date" wire:model.live="endDate" class="form-control @error('endDate') is-invalid @enderror"
+                                       min="{{ $startDate }}">
+                                @error('endDate')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+                        @if($startDate && $endDate && $startDate <= $endDate)
+                            @php
+                                $diff = \Carbon\Carbon::parse($startDate)->diffInDays(\Carbon\Carbon::parse($endDate));
+                            @endphp
+                            <small class="text-muted mt-1 d-block">
+                                <i class="bi bi-info-circle me-1"></i>
+                                {{ $diff === 0 ? '1 hari' : ($diff + 1) . ' hari (weekend & libur akan dilewati otomatis)' }}
+                            </small>
+                        @endif
+                    </div>
+
+                    {{-- Keterangan --}}
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Keterangan</label>
                         <textarea wire:model="leaveNotes" class="form-control" rows="2"

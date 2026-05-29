@@ -10,7 +10,13 @@
                         <p class="text-muted">Sistem Absensi KBM — Pondok Pesantren</p>
                     </div>
 
-                    <form wire:submit.prevent="login">
+                    {{--
+                        PENTING: Gunakan wire:submit (tanpa .prevent).
+                        Livewire 3 sudah otomatis handle preventDefault.
+                        wire:submit.prevent menyebabkan konflik yang membuat
+                        loading spinner tidak pernah berhenti.
+                    --}}
+                    <form wire:submit="login">
                         <div class="mb-3">
                             <label class="form-label fw-semibold">
                                 <i class="bi bi-person me-1"></i> Username / NIP
@@ -18,8 +24,9 @@
                             <input
                                 type="text"
                                 wire:model="username"
-                                class="form-control @error('username') is-invalid @enderror"
+                                class="form-control form-control-lg @error('username') is-invalid @enderror"
                                 placeholder="Masukkan username atau NIP"
+                                autocomplete="username"
                                 autofocus
                             >
                             @error('username')
@@ -34,8 +41,9 @@
                             <input
                                 type="password"
                                 wire:model="password"
-                                class="form-control @error('password') is-invalid @enderror"
+                                class="form-control form-control-lg @error('password') is-invalid @enderror"
                                 placeholder="Masukkan password"
+                                autocomplete="current-password"
                             >
                             @error('password')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -45,13 +53,15 @@
                         <div class="text-center mt-4">
                             <button
                                 type="submit"
-                                class="btn btn-primary btn-block w-100"
+                                class="btn btn-primary btn-block w-100 py-3 fs-16"
                                 wire:loading.attr="disabled"
+                                wire:target="login"
+                                id="btn-login"
                             >
-                                <span wire:loading.remove>
+                                <span wire:loading.remove wire:target="login">
                                     <i class="bi bi-box-arrow-in-right me-1"></i> Masuk
                                 </span>
-                                <span wire:loading>
+                                <span wire:loading wire:target="login">
                                     <span class="spinner-border spinner-border-sm me-1"></span>
                                     Memproses...
                                 </span>

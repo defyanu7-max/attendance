@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\AcademicYear;
 use App\Models\StudentAttendance;
 use App\Models\NotificationQueue;
 use App\Models\Setting;
@@ -43,11 +44,34 @@ class StudentAttendanceObserver
 
     /**
      * Check if student has exceeded the alpha threshold and queue notification.
+     *
+     * Semua Setting di-fetch dalam SATU query `whereIn` dan di-cache per request
+     * via static variable — sehingga batch upsert 30 santri hanya menyentuh DB
+     * 1 kali untuk settings, bukan 90 kali (3 key × 30 santri).
      */
     protected function checkAlphaThreshold(StudentAttendance $attendance): void
     {
-        $mode = Setting::where('key', 'alpha_threshold_mode')->value('value') ?? 'cumulative';
-        $threshold = (int) (Setting::where('key', 'alpha_threshold_count')->value('value') ?? 5);
+        // Satu query bulk, cache per PHP request lifecycle
+        static $settings    = null;
+        static $activeYearId = null;
+
+        if ($settings === null) {
+            $settings = Setting::whereIn('key', [
+                'alpha_threshold_mode',
+                'alpha_threshold_count',
+                'wa_message_template',
+            ])->pluck('value', 'key');
+        }
+
+        // Cache AcademicYear::active() per request — JANGAN panggil per-santri
+        // karena itu menyebabkan query tambahan di dalam DB transaction.
+        if ($activeYearId === null) {
+            $activeYear   = AcademicYear::active();
+            $activeYearId = $activeYear?->id ?? 0;
+        }
+
+        $mode      = $settings->get('alpha_threshold_mode', 'cumulative');
+        $threshold = (int) $settings->get('alpha_threshold_count', 5);
 
         $query = StudentAttendance::where('student_id', $attendance->student_id)
             ->where('status', 'alpha');
@@ -62,9 +86,13 @@ class StudentAttendanceObserver
         $alphaCount = $query->count();
 
         if ($alphaCount >= $threshold) {
-            $student = $attendance->student;
+            // withTrashed() agar tidak null jika santri soft-deleted
+            $student = $attendance->student()->withTrashed()->first();
+            if (! $student) {
+                return;
+            }
 
-            // Only queue if not already notified recently (within 24h)
+            // Hanya queue jika belum ada notifikasi dalam 24 jam terakhir
             $recentlyNotified = NotificationQueue::where('student_id', $student->id)
                 ->where('type', 'alpha_threshold')
                 ->where('created_at', '>=', now()->subHours(24))
@@ -74,24 +102,33 @@ class StudentAttendanceObserver
                 return;
             }
 
-            $template = Setting::where('key', 'wa_message_template')->value('value') ?? '';
-            $message = str_replace(
+            // Gunakan template dari cache — tidak perlu query DB lagi
+            $template = $settings->get('wa_message_template', '');
+
+            // Gunakan currentClassForYear() — aman di dalam transaction
+            $className = $activeYearId > 0
+                ? ($student->currentClassForYear($activeYearId)?->name ?? '-')
+                : '-';
+
+            $message  = str_replace(
                 ['{nama_santri}', '{nis}', '{kelas}', '{jumlah_alpha}'],
                 [
-                    $student->name ?? '-',
-                    $student->nis ?? '-',
-                    $student->currentClass?->name ?? '-',
+                    $student->name   ?? '-',
+                    $student->nis    ?? '-',
+                    $className,
                     $alphaCount,
                 ],
                 $template
             );
 
             NotificationQueue::create([
-                'student_id' => $student->id,
-                'type' => 'alpha_threshold',
-                'phone' => $student->parent_phone,
-                'message' => $message,
-                'status' => 'pending',
+                'student_id'   => $student->id,
+                'unit_id'      => $student->unit_id,
+                'type'         => 'alpha_threshold',
+                'phone'        => $student->parent_phone,
+                'message'      => $message,
+                'status'       => 'pending',
+                'triggered_at' => now(),
             ]);
 
             Log::info("[AlphaThreshold] Student {$student->name} (#{$student->id}) exceeded threshold ({$alphaCount}/{$threshold}).");

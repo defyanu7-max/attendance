@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\AcademicYear;
 use App\Models\StudentAttendance;
 use App\Models\Schedule;
 use App\Models\SchoolCalendar;
@@ -34,9 +35,9 @@ class AutoHadirJob implements ShouldQueue
         $today = now()->toDateString();
         $dayOfWeek = now()->dayOfWeekIso; // 1=Monday .. 7=Sunday
 
-        // Skip if today is a holiday or weekend
+        // Skip if today is a holiday (kolom yang benar: 'type', bukan 'is_holiday')
         $isHoliday = SchoolCalendar::whereDate('date', $today)
-            ->where('is_holiday', true)
+            ->where('type', 'holiday')
             ->exists();
 
         if ($isHoliday) {
@@ -44,9 +45,16 @@ class AutoHadirJob implements ShouldQueue
             return;
         }
 
-        // Get today's schedules
-        $schedules = Schedule::where('day', $dayOfWeek)
-            ->with('class.students')
+        $activeYear = AcademicYear::active();
+        if (! $activeYear) {
+            Log::info("[AutoHadirJob] Skipped: no active academic year.");
+            return;
+        }
+
+        // Get today's schedules (kolom yang benar: 'day_of_week', bukan 'day')
+        $schedules = Schedule::where('day_of_week', $dayOfWeek)
+            ->where('academic_year_id', $activeYear->id)
+            ->with(['class_' => fn ($q) => $q->with(['students' => fn ($q2) => $q2->where('students.status', 'aktif')])])
             ->get();
 
         if ($schedules->isEmpty()) {
@@ -56,27 +64,39 @@ class AutoHadirJob implements ShouldQueue
 
         $inserted = 0;
 
-        DB::transaction(function () use ($schedules, $today, &$inserted) {
+        DB::transaction(function () use ($schedules, $today, $activeYear, &$inserted) {
             foreach ($schedules as $schedule) {
-                $students = $schedule->class->students ?? collect();
+                $students = $schedule->class_?->students ?? collect();
+                if ($students->isEmpty()) continue;
 
+                // Bulk-fetch existing attendance untuk schedule ini hari ini
+                $existingStudentIds = StudentAttendance::where('schedule_id', $schedule->id)
+                    ->whereDate('date', $today)
+                    ->pluck('student_id')
+                    ->toArray();
+
+                $records = [];
                 foreach ($students as $student) {
-                    // Only create if not already exists (idempotent)
-                    $exists = StudentAttendance::where('student_id', $student->id)
-                        ->where('schedule_id', $schedule->id)
-                        ->whereDate('date', $today)
-                        ->exists();
-
-                    if (!$exists) {
-                        StudentAttendance::create([
-                            'student_id' => $student->id,
-                            'schedule_id' => $schedule->id,
-                            'date' => $today,
-                            'status' => 'hadir',
-                            'academic_year_id' => $schedule->academic_year_id,
-                        ]);
-                        $inserted++;
+                    if (in_array($student->id, $existingStudentIds)) {
+                        continue;
                     }
+
+                    $records[] = [
+                        'unit_id'          => $schedule->unit_id,
+                        'student_id'       => $student->id,
+                        'schedule_id'      => $schedule->id,
+                        'academic_year_id' => $activeYear->id,
+                        'date'             => $today,
+                        'status'           => 'hadir',
+                        'is_merged'        => false,
+                        'created_at'       => now(),
+                        'updated_at'       => now(),
+                    ];
+                }
+
+                if (! empty($records)) {
+                    StudentAttendance::insert($records);
+                    $inserted += count($records);
                 }
             }
         });

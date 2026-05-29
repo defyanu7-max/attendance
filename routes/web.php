@@ -19,6 +19,7 @@ use App\Livewire\Master\ClassIndex;
 use App\Livewire\Master\DataImport;
 use App\Livewire\Uks\LeaveForm;
 use App\Livewire\Notification\AlphaNotificationIndex;
+use App\Livewire\System\AcademicYearManager;
 use App\Livewire\System\CalendarManager;
 use App\Livewire\System\SettingsAlpha;
 use App\Livewire\Master\TeacherIndex;
@@ -89,5 +90,6 @@ Route::middleware('auth')->group(function () {
     Route::middleware('can:manage-system')->prefix('system')->group(function () {
         Route::get('/calendar', CalendarManager::class)->name('system.calendar');
         Route::get('/settings', SettingsAlpha::class)->name('system.settings');
+        Route::get('/academic-years', AcademicYearManager::class)->name('system.academic-years');
     });
 });

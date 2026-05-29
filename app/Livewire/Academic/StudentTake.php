@@ -5,6 +5,7 @@ namespace App\Livewire\Academic;
 use App\Models\AcademicYear;
 use App\Models\Classes;
 use App\Models\Schedule;
+use App\Models\SchoolCalendar;
 use App\Models\Setting;
 use App\Models\Student;
 use App\Models\StudentAttendance;
@@ -22,23 +23,35 @@ class StudentTake extends Component
 {
     public Schedule $schedule;
     public array $students = [];
-    public bool $isPastCutoff = false;
-    public string $cutoffTime = '14:00';
-    public bool $isSubmitted = false;
+    public bool $isPastCutoff   = false;
+    public bool $isHoliday      = false;
+    public string $holidayDescription = '';
+    public string $cutoffTime   = '14:00';
+    public bool $isSubmitted    = false;
 
     public function mount(Schedule $schedule): void
     {
-        // Load schedule with relations
         $this->schedule = $schedule->load(['subject', 'class_', 'teacher', 'academicYear']);
 
-        // Check gate
         Gate::authorize('input-attendance', $this->schedule);
 
-        // Get cutoff time from settings
-        $this->cutoffTime = Setting::getValue('attendance_cutoff_time', '14:00');
-        $this->isPastCutoff = now()->format('H:i') > $this->cutoffTime;
+        // Cek hari libur dari SchoolCalendar (kolom `type` = 'holiday')
+        $holiday = SchoolCalendar::whereDate('date', today())
+            ->where('type', 'holiday')
+            ->where(function ($q) use ($schedule) {
+                $q->whereNull('unit_id')
+                  ->orWhere('unit_id', $schedule->unit_id);
+            })
+            ->first();
 
-        // Load students for this class
+        if ($holiday) {
+            $this->isHoliday         = true;
+            $this->holidayDescription = $holiday->description ?? 'Hari Libur';
+        }
+
+        $this->cutoffTime    = Setting::getValue('attendance_cutoff_time', '14:00');
+        $this->isPastCutoff  = now()->format('H:i') > $this->cutoffTime;
+
         $this->loadStudents();
     }
 
@@ -95,6 +108,12 @@ class StudentTake extends Component
 
     public function submit(): void
     {
+        // Guard: hari libur
+        if ($this->isHoliday) {
+            $this->dispatch('notify', type: 'error', message: 'Tidak dapat menyimpan absensi pada hari libur: ' . $this->holidayDescription);
+            return;
+        }
+
         if ($this->isPastCutoff) {
             $this->dispatch('notify', type: 'error', message: 'Waktu input absensi telah berakhir.');
             return;

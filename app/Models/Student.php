@@ -56,14 +56,29 @@ class Student extends Model
 
     /**
      * Get the current class for the active academic year.
+     * NOTE: Jangan panggil ini di dalam Observer/Transaction karena
+     * AcademicYear::active() menembak query di dalam DB transaction.
+     * Gunakan currentClassForYear($yearId) sebagai gantinya.
      */
     public function currentClass(): ?Classes
     {
         $activeYear = AcademicYear::active();
         if (! $activeYear) return null;
 
+        return $this->currentClassForYear($activeYear->id);
+    }
+
+    /**
+     * Get the current class for a specific academic year ID.
+     * Aman dipanggil di dalam Observer/Transaction karena tidak
+     * membuat query AcademicYear tambahan.
+     *
+     * @param int $academicYearId
+     */
+    public function currentClassForYear(int $academicYearId): ?Classes
+    {
         return $this->classes()
-            ->wherePivot('academic_year_id', $activeYear->id)
+            ->wherePivot('academic_year_id', $academicYearId)
             ->first();
     }
 }

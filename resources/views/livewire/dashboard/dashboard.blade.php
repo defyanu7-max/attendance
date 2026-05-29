@@ -37,7 +37,7 @@
     {{-- Stat Cards (Admin+) --}}
     @if($user->isAdminOrAbove() && !empty($stats))
     <div class="row">
-        <div class="col-xl-4 col-sm-6">
+        <div class="col-xl-3 col-sm-6">
             <div class="card">
                 <div class="card-body d-flex align-items-center">
                     <div class="me-auto">
@@ -50,7 +50,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-4 col-sm-6">
+        <div class="col-xl-3 col-sm-6">
             <div class="card">
                 <div class="card-body d-flex align-items-center">
                     <div class="me-auto">
@@ -63,20 +63,49 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-4 col-sm-6">
+        <div class="col-xl-3 col-sm-6">
             <div class="card">
                 <div class="card-body d-flex align-items-center">
                     <div class="me-auto">
-                        <h2 class="fs-32 fw-bold mb-0 text-danger">{{ $stats['pending_notifications'] }}</h2>
-                        <span class="fs-14 text-muted">Notifikasi Alpha Pending</span>
+                        <h2 class="fs-32 fw-bold mb-0 text-danger">{{ $stats['today_alpha_critical'] }}</h2>
+                        <span class="fs-14 text-muted">Alpha Kritis Hari Ini</span>
                     </div>
                     <div class="icon-box bg-danger-light rounded-circle p-3">
-                        <i class="bi bi-bell-exclamation fs-24 text-danger"></i>
+                        <i class="bi bi-person-x fs-24 text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card">
+                <div class="card-body d-flex align-items-center">
+                    <div class="me-auto">
+                        <h2 class="fs-32 fw-bold mb-0 text-success">{{ $stats['active_classes'] }}</h2>
+                        <span class="fs-14 text-muted">Total Kelas Aktif</span>
+                    </div>
+                    <div class="icon-box bg-success-light rounded-circle p-3">
+                        <i class="bi bi-mortarboard fs-24 text-success"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    {{-- Notifikasi Alpha Pending (tersembunyi di stat card di atas, ditampilkan terpisah jika ada) --}}
+    @if($stats['pending_notifications'] > 0)
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-warning d-flex align-items-center py-2 mb-2" role="alert">
+                <i class="bi bi-bell-exclamation-fill me-2 fs-5"></i>
+                <div>
+                    Terdapat <strong>{{ $stats['pending_notifications'] }}</strong> notifikasi alpha yang menunggu dikirim.
+                    @can('manage-notifications')
+                    <a href="{{ route('notifications.index') }}" class="alert-link ms-1">Tindak lanjuti →</a>
+                    @endcan
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
     @endif
 
     {{-- Today's Schedule --}}

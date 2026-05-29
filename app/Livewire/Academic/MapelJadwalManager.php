@@ -238,6 +238,12 @@ class MapelJadwalManager extends Component
         $subject = Subject::withoutGlobalScopes()->find($this->scheduleForm['subject_id']);
         $class   = Classes::withoutGlobalScopes()->find($this->scheduleForm['class_id']);
 
+        // Guard: subject atau class dihapus di antara validasi dan simpan
+        if (! $subject || ! $class) {
+            $this->dispatch('notify', type: 'error', message: 'Mata pelajaran atau kelas tidak ditemukan. Silakan refresh dan coba lagi.');
+            return;
+        }
+
         $uniqueCode = $subject->code
             |> strtoupper(...)
             |> (fn(string $s) => $s . '-' . str_replace([' ', '-', '/'], '', strtoupper($class->name)))
@@ -342,6 +348,17 @@ class MapelJadwalManager extends Component
     // =========================================================================
 
     /**
+     * Active academic year — di-cache oleh Livewire selama satu render cycle.
+     * Semua computed property lain WAJIB menggunakan $this->activeYear
+     * bukan memanggil AcademicYear::active() secara langsung.
+     */
+    #[Computed]
+    public function activeYear(): ?AcademicYear
+    {
+        return AcademicYear::active();
+    }
+
+    /**
      * Count subjects per unit for tab badges.
      */
     #[Computed]
@@ -374,7 +391,7 @@ class MapelJadwalManager extends Component
                 $q2->where('name', 'like', "%{$this->subjectSearch}%")
                    ->orWhere('code', 'like', "%{$this->subjectSearch}%");
             }))
-            ->withCount(['schedules' => fn ($q) => $q->where('academic_year_id', AcademicYear::active()?->id)])
+            ->withCount(['schedules' => fn ($q) => $q->where('academic_year_id', $this->activeYear?->id)])
             ->orderBy('code')
             ->get();
     }
@@ -385,7 +402,7 @@ class MapelJadwalManager extends Component
     #[Computed]
     public function totalSchedulesUnit(): int
     {
-        $activeYear = AcademicYear::active();
+        $activeYear = $this->activeYear;
         if (! $activeYear) {
             return 0;
         }
@@ -418,7 +435,7 @@ class MapelJadwalManager extends Component
     #[Computed]
     public function schedulesByDay(): Collection
     {
-        $activeYear = AcademicYear::active();
+        $activeYear = $this->activeYear;
         if (! $activeYear) {
             return collect();
         }
@@ -454,7 +471,7 @@ class MapelJadwalManager extends Component
     #[Computed]
     public function classesForUnit(): Collection
     {
-        $activeYear = AcademicYear::active();
+        $activeYear = $this->activeYear;
         if (! $activeYear) {
             return collect();
         }

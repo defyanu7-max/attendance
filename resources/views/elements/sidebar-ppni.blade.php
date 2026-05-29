@@ -21,21 +21,13 @@
                 </a>
                 <ul aria-expanded="false">
                     <li><a href="{{ route('schedules.index') }}">Jadwal & Absen</a></li>
-                    <li><a href="{{ route('attendance.recap') }}">Rekap Kelas</a></li>
+                    <li><a href="{{ route('attendance.recap', ['class' => 'today']) }}">Rekap Kelas</a></li>
                 </ul>
-            </li>
-
-            {{-- Mata Pelajaran (semua role) --}}
-            <li class="{{ request()->routeIs('subjects.*') ? 'mm-active' : '' }}">
-                <a href="{{ route('subjects.index') }}">
-                    <i class="bi bi-book"></i>
-                    <span class="nav-text">Mata Pelajaran</span>
-                </a>
             </li>
 
             {{-- Data Master (Admin+) --}}
             @can('manage-master-data')
-            <li class="{{ request()->routeIs('students.*', 'teachers.*', 'classes.*', 'substitutions.*') ? 'mm-active' : '' }}">
+            <li class="{{ request()->routeIs('students.*', 'teachers.*', 'classes.*', 'substitutions.*', 'akademik.mapel-jadwal') ? 'mm-active' : '' }}">
                 <a class="has-arrow" href="javascript:void(0);" aria-expanded="false">
                     <i class="bi bi-people"></i>
                     <span class="nav-text">Data Master</span>
@@ -44,11 +36,12 @@
                     <li><a href="{{ route('students.index') }}">Santri</a></li>
                     <li><a href="{{ route('teachers.index') }}">Guru</a></li>
                     <li><a href="{{ route('classes.index') }}">Kelas</a></li>
+                    <li><a href="{{ route('akademik.mapel-jadwal') }}">Mata Pelajaran & Jadwal</a></li>
                     <li><a href="{{ route('substitutions.index') }}">Guru Badal</a></li>
                 </ul>
             </li>
 
-            {{-- Export Excel --}}
+            {{-- Export Excel (Admin+) --}}
             <li class="{{ request()->is('export*') ? 'mm-active' : '' }}">
                 <a class="has-arrow" href="javascript:void(0);" aria-expanded="false">
                     <i class="bi bi-file-earmark-excel"></i>
@@ -90,8 +83,15 @@
                     <span class="nav-text">Sistem</span>
                 </a>
                 <ul aria-expanded="false">
-                    <li><a href="{{ route('system.calendar') }}">Kalender Libur</a></li>
-                    <li><a href="{{ route('system.settings') }}">Pengaturan Alpha</a></li>
+                    <li><a href="{{ route('system.academic-years') }}"
+                           class="{{ request()->routeIs('system.academic-years') ? 'mm-active' : '' }}">
+                        <i class="bi bi-calendar-range me-1"></i>Tahun Ajaran</a></li>
+                    <li><a href="{{ route('system.calendar') }}"
+                           class="{{ request()->routeIs('system.calendar') ? 'mm-active' : '' }}">
+                        <i class="bi bi-calendar-event me-1"></i>Kalender Libur</a></li>
+                    <li><a href="{{ route('system.settings') }}"
+                           class="{{ request()->routeIs('system.settings') ? 'mm-active' : '' }}">
+                        <i class="bi bi-sliders me-1"></i>Pengaturan Alpha</a></li>
                 </ul>
             </li>
             @endcan

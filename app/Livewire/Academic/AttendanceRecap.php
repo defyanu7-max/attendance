@@ -35,6 +35,38 @@ class AttendanceRecap extends Component
     {
         if ($class && $class !== 'today' && is_numeric($class)) {
             $this->classId = (int) $class;
+        } else {
+            // Auto-select kelas pertama saat mount (bukan di render)
+            $this->autoSelectFirstClass();
+        }
+    }
+
+    /**
+     * Auto-select kelas pertama yang tersedia untuk user ini.
+     * Dipanggil sekali di mount(), bukan di render().
+     */
+    private function autoSelectFirstClass(): void
+    {
+        $activeYear = AcademicYear::active();
+        if (! $activeYear) return;
+
+        $user = Auth::user();
+        $query = Classes::where('academic_year_id', $activeYear->id)
+            ->orderBy('name');
+
+        if ($user->role === 'walikelas') {
+            $query->where('homeroom_teacher_id', $user->id);
+        } elseif ($user->role === 'guru') {
+            $teacherClassIds = Schedule::where('teacher_id', $user->id)
+                ->where('academic_year_id', $activeYear->id)
+                ->pluck('class_id')
+                ->unique();
+            $query->whereIn('id', $teacherClassIds);
+        }
+
+        $firstClass = $query->first();
+        if ($firstClass) {
+            $this->classId = $firstClass->id;
         }
     }
 
@@ -569,12 +601,6 @@ class AttendanceRecap extends Component
 
     public function render()
     {
-        // Auto-select first class if none selected
-        $classList = $this->classes;
-        if (! $this->classId && $classList->isNotEmpty()) {
-            $this->classId = $classList->first()->id;
-        }
-
         return view('livewire.academic.attendance-recap');
     }
 }

@@ -11,8 +11,8 @@ class NotificationQueue extends Model
     protected $table = 'notification_queue';
 
     protected $fillable = [
-        'unit_id', 'student_id', 'alpha_count', 'message',
-        'status', 'triggered_at', 'sent_at', 'sent_by',
+        'unit_id', 'student_id', 'alpha_count', 'phone', 'type',
+        'message', 'status', 'triggered_at', 'sent_at', 'sent_by',
     ];
 
     protected $casts = [
@@ -35,11 +35,10 @@ class NotificationQueue extends Model
         return $this->belongsTo(Student::class);
     }
 
-    public function sender(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'sent_by');
-    }
-
+    /**
+     * The user who manually sent/dismissed this notification.
+     * (renamed from sender() to avoid ambiguity)
+     */
     public function sentByUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'sent_by');

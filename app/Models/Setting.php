@@ -33,17 +33,28 @@ class Setting extends Model
 
     /**
      * Set a setting value by key.
+     *
+     * Satu query saja: `updateOrCreate` — tidak perlu query SELECT tambahan untuk `type`.
+     * Untuk key yang sudah ada: type tidak berubah (DB menyimpan sesuai yang sudah terseed).
+     * Untuk key baru: type di-infer dari nilai yang diberikan.
      */
     public static function setValue(string $key, mixed $value): void
     {
         $strValue = is_array($value) ? json_encode($value) : (string) $value;
-        $type = is_array($value) ? 'json' : (in_array($strValue, ['true', 'false'], true) ? 'boolean' : (is_numeric($strValue) ? 'integer' : 'string'));
+
+        // Infer type dari nilai — hanya dipakai jika key belum ada (insert baru)
+        $inferredType = match (true) {
+            is_array($value)                              => 'json',
+            in_array($strValue, ['true', 'false'], true) => 'boolean',
+            is_numeric($strValue)                         => 'integer',
+            default                                       => 'string',
+        };
 
         static::updateOrCreate(
             ['key' => $key],
             [
-                'value' => $strValue,
-                'type' => static::where('key', $key)->value('type') ?? $type,
+                'value'      => $strValue,
+                'type'       => $inferredType,
                 'updated_at' => now(),
             ]
         );

@@ -469,9 +469,8 @@
 
 </div>
 
-{{-- SweetAlert2 confirmation for schedule/subject deletion --}}
+{{-- SweetAlert2 already loaded globally in app.blade.php — do NOT load again here --}}
 @push('scripts')
-<script src="{{ asset('vendor/sweetalert2/sweetalert2.min.js') }}"></script>
 <script>
 document.addEventListener('livewire:initialized', () => {
 

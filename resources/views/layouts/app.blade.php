@@ -72,7 +72,8 @@
 
         <!-- Content Body -->
         <div class="content-body default-height">
-            {{ $slot }}
+            {{ $slot ?? '' }}
+            @yield('content')
         </div>
 
         <!-- Footer -->
@@ -98,13 +99,111 @@
     <!-- Livewire scripts (WAJIB setelah jQuery) -->
     @livewireScripts
 
-    <!-- Livewire + Toastr integration -->
+    {{-- ================================================================
+         PPNI System — Livewire ↔ jQuery/Template Sync
+         Mengatasi konflik antara plugin jQuery template Akademi
+         dengan lifecycle Livewire 3 (navigate, morph, updated).
+    ================================================================ --}}
     <script>
-    document.addEventListener('livewire:initialized', () => {
-        Livewire.on('notify', ({ type, message }) => {
-            toastr[type](message);
+    (function () {
+        // ----------------------------------------------------------------
+        // Helper: inisialisasi ulang semua plugin jQuery setelah
+        // Livewire mengganti DOM (navigate atau morph update).
+        // ----------------------------------------------------------------
+        function reinitPlugins() {
+            // 1. MetisMenu — sidebar navigation tree
+            if (typeof $.fn.metisMenu === 'function') {
+                try { $('#menu').metisMenu(); } catch (e) {}
+            }
+
+            // 2. Bootstrap Select
+            if (typeof $.fn.selectpicker === 'function') {
+                try { $('select.selectpicker').selectpicker('refresh'); } catch (e) {}
+            }
+
+            // 3. Bootstrap Tooltips (BS5 API)
+            if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+                document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+                    var existing = bootstrap.Tooltip.getInstance(el);
+                    if (!existing) { new bootstrap.Tooltip(el, { trigger: 'hover' }); }
+                });
+            }
+
+            // 4. Perfect Scrollbar (sidebar scroll)
+            if (typeof PerfectScrollbar !== 'undefined') {
+                var ps = document.querySelector('.dlabnav-scroll');
+                if (ps && !ps._ps) {
+                    ps._ps = new PerfectScrollbar(ps);
+                }
+            }
+        }
+
+        // ----------------------------------------------------------------
+        // livewire:navigated — dipanggil setelah navigate:true redirect
+        // PENTING: sembunyikan #preloader agar tidak infinite-loading
+        // setelah login redirect ke dashboard.
+        // ----------------------------------------------------------------
+        document.addEventListener('livewire:navigated', function () {
+            // Sembunyikan preloader template
+            $('#preloader').fadeOut(400, function () { $(this).remove(); });
+
+            // Re-init semua plugin
+            reinitPlugins();
+
+            // Scroll ke atas setelah navigasi (mobile UX)
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
-    });
+
+        // ----------------------------------------------------------------
+        // livewire:initialized — init pertama kali saat halaman dimuat
+        // ----------------------------------------------------------------
+        document.addEventListener('livewire:initialized', function () {
+            // Toastr integration
+            Livewire.on('notify', function (event) {
+                var type = event[0] ? event[0].type : (event.type || 'info');
+                var message = event[0] ? event[0].message : (event.message || '');
+                if (typeof toastr !== 'undefined' && typeof toastr[type] === 'function') {
+                    toastr[type](message);
+                }
+            });
+
+            reinitPlugins();
+        });
+
+        // ----------------------------------------------------------------
+        // livewire:updated — re-init setelah setiap partial render
+        // (penting untuk bootstrap-select di dalam Livewire component)
+        // ----------------------------------------------------------------
+        document.addEventListener('livewire:updated', function () {
+            reinitPlugins();
+        });
+
+        // ----------------------------------------------------------------
+        // Hamburger / Sidebar toggle — pastikan bekerja di mobile
+        // Template Akademi kadang kehilangan event listener ini setelah
+        // Livewire morph mengganti elemen DOM.
+        // ----------------------------------------------------------------
+        document.addEventListener('livewire:navigated', function() {
+            // Re-init Hamburger Menu
+            $('.nav-control').off('click').on('click', function() {
+                $('#main-wrapper').toggleClass('menu-toggle');
+                $(".hamburger").toggleClass("is-active");
+            });
+            
+            // Sembunyikan preloader (safety net)
+            $('#preloader').fadeOut(500);
+        });
+
+        // ----------------------------------------------------------------
+        // Fallback: sembunyikan preloader setelah max 3 detik
+        // jika livewire:navigated tidak terpanggil (misalnya halaman biasa)
+        // ----------------------------------------------------------------
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                $('#preloader').fadeOut(500);
+            }, 500);
+        });
+    }());
     </script>
 
     @stack('scripts')
